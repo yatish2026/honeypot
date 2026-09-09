@@ -64,7 +64,7 @@ hide_sidebar_css = """
     }
 """ if st.session_state.app_mode == "landing" else ""
 
-# Human-Designed Enterprise Cybersecurity & AI Safety Theme
+# Human-Designed Enterprise Light Theme (Clean, High-Contrast & Crisp)
 st.markdown(f"""
 <style>
     {hide_sidebar_css}
@@ -77,7 +77,7 @@ st.markdown(f"""
     
     h1, h2, h3, h4, h5, h6, .brand-text {{
         font-family: 'Space Grotesk', sans-serif !important;
-        color: #f8fafc !important;
+        color: #0f172a !important;
         font-weight: 800 !important;
         letter-spacing: -0.5px !important;
     }}
@@ -88,19 +88,19 @@ st.markdown(f"""
     }}
     
     /* =========================================================================
-       1. REFINED ENTERPRISE OBSIDIAN & SLATE CANVAS (HUMAN-MADE PALETTE)
+       1. CRISP ENTERPRISE LIGHT CANVAS & CLEAN BACKGROUND
        ========================================================================= */
     .stApp {{
-        background: radial-gradient(circle at 15% 10%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
-                    radial-gradient(circle at 85% 20%, rgba(99, 102, 241, 0.07) 0%, transparent 50%),
-                    radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
-                    #080c14 !important;
-        color: #f8fafc !important;
+        background: radial-gradient(circle at 15% 10%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 85% 20%, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.04) 0%, transparent 50%),
+                    #f8fafc !important;
+        color: #0f172a !important;
     }}
     
     /* Global Typography & Content Hierarchy */
     p, span, div, li, td, th {{
-        color: #cbd5e1;
+        color: #334155;
         font-size: 1.05rem;
         line-height: 1.65;
     }}
@@ -108,21 +108,21 @@ st.markdown(f"""
     .stSubheader, [data-testid="stHeadingWithActionElements"] h2, [data-testid="stHeadingWithActionElements"] h3 {{
         font-size: 1.85rem !important;
         font-weight: 800 !important;
-        color: #ffffff !important;
+        color: #0f172a !important;
         margin-top: 10px !important;
         margin-bottom: 6px !important;
     }}
     
     [data-testid="stCaptionContainer"], .stCaption, small {{
         font-size: 1.05rem !important;
-        color: #94a3b8 !important;
+        color: #64748b !important;
         font-weight: 500 !important;
         line-height: 1.6 !important;
         margin-bottom: 12px !important;
     }}
 
     /* =========================================================================
-       2. TACTILE ENTERPRISE BUTTONS (ZERO WHITE-BOX BUGS, CRISP CONTRAST)
+       2. TACTILE ENTERPRISE BUTTONS (LIGHT THEME, CRISP CONTRAST)
        ========================================================================= */
     button, 
     .stButton > button, 
@@ -152,11 +152,11 @@ st.markdown(f"""
     button[kind="primary"], 
     .stButton > button[kind="primary"],
     [data-testid="stDownloadButton"] > button {{
-        background: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%) !important;
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
         background-color: #2563EB !important;
         color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4) !important;
+        border: none !important;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
     }}
     
     [data-testid="baseButton-primary"] *, 
@@ -175,27 +175,27 @@ st.markdown(f"""
     .stButton > button[kind="primary"]:hover,
     [data-testid="stDownloadButton"] > button:hover {{
         transform: translateY(-2px) !important;
-        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.6) !important;
-        background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%) !important;
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5) !important;
+        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
     }}
 
-    /* Secondary Action Buttons (Deep Slate Glass + Sapphire Accent Border + Pure White Text) */
+    /* Secondary Action Buttons (Pure White Card + Subtle Slate Border + Dark Slate Text) */
     [data-testid="baseButton-secondary"], 
     [data-testid="stBaseButton-secondary"],
     button[kind="secondary"],
     .stButton > button {{
-        background: #151d30 !important;
-        background-color: #151d30 !important;
-        color: #ffffff !important;
-        border: 1.5px solid #3b82f6 !important;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border: 1.5px solid #cbd5e1 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
     }}
     
     [data-testid="baseButton-secondary"] *, 
     [data-testid="stBaseButton-secondary"] *,
     button[kind="secondary"] *,
     .stButton > button * {{
-        color: #ffffff !important;
+        color: #0f172a !important;
         font-weight: 700 !important;
         font-size: 1.02rem !important;
     }}
@@ -204,10 +204,11 @@ st.markdown(f"""
     [data-testid="stBaseButton-secondary"]:hover,
     button[kind="secondary"]:hover,
     .stButton > button:hover {{
-        background: #1e2a47 !important;
-        background-color: #1e2a47 !important;
-        border-color: #60a5fa !important;
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3) !important;
+        background: #f8fafc !important;
+        background-color: #f8fafc !important;
+        border-color: #2563eb !important;
+        color: #2563eb !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
         transform: translateY(-2px) !important;
     }}
     
@@ -215,23 +216,23 @@ st.markdown(f"""
     [data-testid="stBaseButton-secondary"]:hover *,
     button[kind="secondary"]:hover *,
     .stButton > button:hover * {{
-        color: #93c5fd !important;
+        color: #2563eb !important;
     }}
 
     /* =========================================================================
        3. WORKSPACE RADIO NAVIGATION (CLEAR PILLS, LARGE CRISP FONT)
        ========================================================================= */
     div[data-testid="stRadio"] {{
-        background: #0d1322 !important;
+        background: #f1f5f9 !important;
         padding: 16px 22px !important;
         border-radius: 16px !important;
-        border: 1.5px solid rgba(59, 130, 246, 0.3) !important;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+        border: 1.5px solid #e2e8f0 !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
         margin-bottom: 25px !important;
     }}
     
     div[data-testid="stRadio"] > label {{
-        color: #60a5fa !important;
+        color: #1e293b !important;
         font-size: 1.15rem !important;
         font-weight: 800 !important;
         margin-bottom: 12px !important;
@@ -246,8 +247,8 @@ st.markdown(f"""
     }}
     
     div[data-testid="stRadio"] div[role="radiogroup"] label {{
-        background: #162035 !important;
-        border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
         border-radius: 12px !important;
         padding: 12px 22px !important;
         margin-right: 0px !important;
@@ -255,17 +256,18 @@ st.markdown(f"""
         transition: all 0.2s ease !important;
         display: flex !important;
         align-items: center !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02) !important;
     }}
     
     div[data-testid="stRadio"] div[role="radiogroup"] label:hover {{
-        border-color: #3b82f6 !important;
-        background: #1e2c4a !important;
+        border-color: #2563eb !important;
+        background: #f8fafc !important;
     }}
     
     div[data-testid="stRadio"] div[role="radiogroup"] label p, 
     div[data-testid="stRadio"] div[role="radiogroup"] label span, 
     div[data-testid="stRadio"] div[role="radiogroup"] label div {{
-        color: #ffffff !important;
+        color: #1e293b !important;
         font-size: 1.12rem !important;
         font-weight: 700 !important;
         letter-spacing: 0.2px !important;
@@ -273,36 +275,36 @@ st.markdown(f"""
     
     div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"],
     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) {{
-        background: rgba(37, 99, 235, 0.22) !important;
-        border: 2px solid #3b82f6 !important;
-        box-shadow: 0 0 20px rgba(59, 130, 246, 0.35) !important;
+        background: rgba(37, 99, 235, 0.1) !important;
+        border: 2px solid #2563eb !important;
+        box-shadow: 0 0 16px rgba(37, 99, 235, 0.2) !important;
     }}
     
     div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"] p,
     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) p {{
-        color: #60a5fa !important;
+        color: #2563eb !important;
         font-weight: 800 !important;
     }}
 
     /* =========================================================================
-       4. FORM CONTROLS, SELECTS, INPUTS & TEXTAREAS (HIGH CONTRAST)
+       4. FORM CONTROLS, SELECTS, INPUTS & TEXTAREAS (LIGHT THEME)
        ========================================================================= */
     .stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {{
-        background-color: #101726 !important;
-        color: #ffffff !important;
-        border: 1.5px solid #243048 !important;
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border: 1.5px solid #cbd5e1 !important;
         border-radius: 10px !important;
         font-size: 1.05rem !important;
         padding: 12px 16px !important;
     }}
     
     .stTextInput input:focus, .stTextArea textarea:focus, .stSelectbox div[data-baseweb="select"]:focus-within {{
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 15px rgba(59, 130, 246, 0.25) !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 0 10px rgba(37, 99, 235, 0.15) !important;
     }}
     
     .stTextInput label, .stTextArea label, .stSelectbox label, .stMultiSelect label {{
-        color: #60a5fa !important;
+        color: #1e293b !important;
         font-size: 1.12rem !important;
         font-weight: 700 !important;
         margin-bottom: 6px !important;
@@ -310,63 +312,65 @@ st.markdown(f"""
     
     /* Popover Dropdown Menus */
     div[data-baseweb="popover"], ul[role="listbox"] {{
-        background-color: #101726 !important;
-        border: 1.5px solid #243048 !important;
+        background-color: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
         border-radius: 12px !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
     }}
     
     li[role="option"] {{
-        background-color: #101726 !important;
-        color: #ffffff !important;
+        background-color: #ffffff !important;
+        color: #0f172a !important;
         font-size: 1.05rem !important;
         padding: 10px 16px !important;
     }}
     
     li[role="option"]:hover, li[role="option"][aria-selected="true"] {{
-        background-color: #1c2840 !important;
-        color: #60a5fa !important;
+        background-color: #f1f5f9 !important;
+        color: #2563eb !important;
         font-weight: 700 !important;
     }}
 
     /* =========================================================================
-       5. SIDEBAR STYLING (DARK CYBER CONTROLS)
+       5. SIDEBAR STYLING (CLEAN PEARL WHITE WORKSPACE)
        ========================================================================= */
     [data-testid="stSidebar"] {{
-        background-color: #0a0e1a !important;
-        background: #0a0e1a !important;
-        border-right: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+        border-right: 1.5px solid #e2e8f0 !important;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.02) !important;
     }}
     
     [data-testid="stSidebar"] * {{
-        color: #f1f5f9 !important;
+        color: #334155 !important;
     }}
     
     [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] h4 {{
-        color: #60a5fa !important;
+        color: #0f172a !important;
         font-weight: 800 !important;
     }}
     
     [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {{
-        color: #cbd5e1 !important;
+        color: #64748b !important;
         font-size: 1.02rem !important;
     }}
     
     [data-testid="stSidebar"] input, [data-testid="stSidebar"] select {{
-        background-color: #131c2e !important;
-        color: #ffffff !important;
-        border: 1.5px solid #243048 !important;
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+        border: 1.5px solid #cbd5e1 !important;
     }}
 
     /* =========================================================================
-       6. CARDS, CONTAINERS & EXPANDERS
+       6. CARDS, CONTAINERS & EXPANDERS (LIGHT MODE)
        ========================================================================= */
     .hero-box {{
-        background: linear-gradient(145deg, rgba(17, 24, 39, 0.95) 0%, rgba(10, 14, 26, 0.98) 100%);
-        border: 1.5px solid rgba(59, 130, 246, 0.35);
+        background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
+        border: 1.5px solid #e2e8f0;
         border-radius: 24px;
         padding: 44px;
         margin-bottom: 36px;
-        box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.7), 0 0 35px rgba(37, 99, 235, 0.1);
+        box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 25px rgba(37, 99, 235, 0.05);
         position: relative;
     }}
     
@@ -374,9 +378,9 @@ st.markdown(f"""
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: rgba(37, 99, 235, 0.15);
-        color: #60a5fa;
-        border: 1.5px solid rgba(59, 130, 246, 0.4);
+        background: rgba(37, 99, 235, 0.08);
+        color: #2563eb;
+        border: 1.5px solid rgba(37, 99, 235, 0.25);
         padding: 6px 18px;
         border-radius: 30px;
         font-size: 0.92rem;
@@ -391,19 +395,19 @@ st.markdown(f"""
         font-weight: 800;
         line-height: 1.18;
         letter-spacing: -1.2px;
-        color: #ffffff;
+        color: #0f172a;
         margin-bottom: 16px;
     }}
     
     .brand-gradient-text {{
-        background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #34d399 100%);
+        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #059669 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }}
     
     .hero-desc {{
         font-size: 1.22rem;
-        color: #cbd5e1;
+        color: #475569;
         max-width: 860px;
         line-height: 1.7;
         margin-bottom: 28px;
@@ -417,22 +421,23 @@ st.markdown(f"""
     }}
     
     .stat-card {{
-        background: rgba(14, 20, 34, 0.9);
-        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
         border-radius: 14px;
         padding: 16px 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     }}
     
     .stat-val {{
         font-size: 2.1rem;
         font-weight: 800;
-        color: #60a5fa;
+        color: #2563eb;
         font-family: 'JetBrains Mono', monospace;
     }}
     
     .stat-lbl {{
         font-size: 0.88rem;
-        color: #94a3b8;
+        color: #64748b;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.6px;
@@ -440,8 +445,8 @@ st.markdown(f"""
     
     /* Module Feature Card Container */
     .module-card-box {{
-        background: #101726;
-        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
         border-radius: 18px;
         padding: 24px;
         height: 100%;
@@ -449,26 +454,26 @@ st.markdown(f"""
         flex-direction: column;
         justify-content: space-between;
         transition: all 0.25s ease;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     }}
     
     .module-card-box:hover {{
         border-color: #3b82f6;
         transform: translateY(-4px);
-        box-shadow: 0 14px 30px -10px rgba(37, 99, 235, 0.25);
+        box-shadow: 0 12px 28px -5px rgba(37, 99, 235, 0.15);
     }}
     
     .module-title {{
         font-size: 1.45rem;
         font-weight: 800;
-        color: #ffffff;
+        color: #0f172a;
         margin-top: 14px;
         margin-bottom: 10px;
     }}
     
     .module-desc {{
         font-size: 1.02rem;
-        color: #cbd5e1;
+        color: #475569;
         line-height: 1.65;
         margin-bottom: 16px;
     }}
@@ -479,24 +484,25 @@ st.markdown(f"""
         border-radius: 6px;
         font-size: 0.84rem;
         font-weight: 700;
-        background: rgba(255, 255, 255, 0.08);
-        color: #f1f5f9;
+        background: #f1f5f9;
+        color: #1e293b;
         margin-right: 6px;
         margin-bottom: 6px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid #cbd5e1;
     }}
     
     .pipeline-step {{
-        background: #101726;
-        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
         border-radius: 16px;
         padding: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     }}
     
     .step-num {{
         font-size: 0.92rem;
         font-weight: 800;
-        color: #60a5fa;
+        color: #2563eb;
         font-family: 'JetBrains Mono', monospace;
         letter-spacing: 1px;
         margin-bottom: 6px;
@@ -505,21 +511,22 @@ st.markdown(f"""
     .step-name {{
         font-size: 1.3rem;
         font-weight: 800;
-        color: #ffffff;
+        color: #0f172a;
         margin-bottom: 10px;
     }}
     
     .user-box {{
-        background: #101726;
-        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
         border-radius: 14px;
         padding: 22px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     }}
     
     .badge-cyber-emerald {{
-        background: rgba(16, 185, 129, 0.18);
-        color: #34d399;
-        border: 1.5px solid rgba(16, 185, 129, 0.5);
+        background: rgba(16, 185, 129, 0.12);
+        color: #059669;
+        border: 1.5px solid rgba(16, 185, 129, 0.35);
         padding: 5px 14px;
         border-radius: 6px;
         font-size: 0.9rem;
@@ -527,9 +534,9 @@ st.markdown(f"""
     }}
     
     .badge-cyber-coral {{
-        background: rgba(244, 63, 94, 0.18);
-        color: #fb7185;
-        border: 1.5px solid rgba(244, 63, 94, 0.5);
+        background: rgba(239, 68, 68, 0.12);
+        color: #dc2626;
+        border: 1.5px solid rgba(239, 68, 68, 0.35);
         padding: 5px 14px;
         border-radius: 6px;
         font-size: 0.9rem;
@@ -537,15 +544,16 @@ st.markdown(f"""
     }}
     
     .cyber-card {{
-        background: #101726;
-        border: 1.5px solid rgba(255, 255, 255, 0.1);
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
         border-radius: 16px;
         padding: 24px;
         margin-bottom: 18px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
     }}
     
     .cyber-card-danger {{
-        border-left: 5px solid #F43F5E !important;
+        border-left: 5px solid #EF4444 !important;
     }}
     
     .cyber-card-success {{
@@ -556,18 +564,20 @@ st.markdown(f"""
         font-size: 2.4rem;
         font-weight: 800;
         letter-spacing: -0.5px;
+        color: #0f172a;
     }}
     
     /* Expanders */
     div[data-testid="stExpander"] {{
-        background-color: #101726 !important;
-        border: 1.5px solid #243048 !important;
+        background-color: #ffffff !important;
+        border: 1.5px solid #e2e8f0 !important;
         border-radius: 12px !important;
         margin-bottom: 14px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
     }}
     
     div[data-testid="stExpander"] summary span {{
-        color: #ffffff !important;
+        color: #0f172a !important;
         font-weight: 800 !important;
         font-size: 1.15rem !important;
     }}
@@ -581,17 +591,18 @@ st.markdown(f"""
     
     /* Footer */
     .platform-footer {{
-        border-top: 1.5px solid rgba(255, 255, 255, 0.1);
+        border-top: 1.5px solid #e2e8f0;
         padding: 36px 10px 20px 10px;
         margin-top: 50px;
-        color: #94a3b8;
+        color: #64748b;
         font-size: 0.98rem;
     }}
     
     /* Clean image frame */
     .stImage img {{
         border-radius: 12px !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border: 1.5px solid #e2e8f0 !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
     }}
 </style>
 """, unsafe_allow_html=True)
@@ -625,8 +636,8 @@ if st.session_state.app_mode == "landing":
     with col_nav1:
         st.markdown("""
         <div style="padding-top: 8px;">
-            <span style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; color: #ffffff;">
-                🛡️ DECEPTISCAN <span style="color: #60a5fa;">//</span> LLM SHIELD
+            <span style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; color: #0f172a;">
+                🛡️ DECEPTISCAN <span style="color: #2563eb;">//</span> LLM SHIELD
             </span>
         </div>
         """, unsafe_allow_html=True)
@@ -846,7 +857,7 @@ if st.session_state.app_mode == "landing":
         <div class="pipeline-step">
             <div class="step-num">STEP 01</div>
             <div class="step-name">Ingress & Fingerprint</div>
-            <p style="color: #cbd5e1; font-size: 0.98rem; line-height: 1.6;">
+            <p style="color: #475569; font-size: 0.98rem; line-height: 1.6;">
                 The scanner probes target IPs across standard & deception ports, capturing protocol handshakes, latency profiles, and banner entropy vectors.
             </p>
         </div>
@@ -855,9 +866,9 @@ if st.session_state.app_mode == "landing":
     with col_s2:
         st.markdown("""
         <div class="pipeline-step">
-            <div class="step-num" style="color: #a78bfa;">STEP 02</div>
+            <div class="step-num" style="color: #7c3aed;">STEP 02</div>
             <div class="step-name">ML & Adversarial Probing</div>
-            <p style="color: #cbd5e1; font-size: 0.98rem; line-height: 1.6;">
+            <p style="color: #475569; font-size: 0.98rem; line-height: 1.6;">
                 Random Forest classifies deception likelihood while the AI Red-Team engine injects OWASP LLM01/07 payloads to test refusal boundaries.
             </p>
         </div>
@@ -866,9 +877,9 @@ if st.session_state.app_mode == "landing":
     with col_s3:
         st.markdown("""
         <div class="pipeline-step">
-            <div class="step-num" style="color: #34d399;">STEP 03</div>
+            <div class="step-num" style="color: #059669;">STEP 03</div>
             <div class="step-name">Hardening & Audit PDF</div>
-            <p style="color: #cbd5e1; font-size: 0.98rem; line-height: 1.6;">
+            <p style="color: #475569; font-size: 0.98rem; line-height: 1.6;">
                 Generates production-ready XML/Sandwich defense templates and compiles an executive PDF security report for compliance and review.
             </p>
         </div>
@@ -883,29 +894,29 @@ if st.session_state.app_mode == "landing":
     with col_u1:
         st.markdown("""
         <div class="user-box">
-            <h4 style="color: #60a5fa; margin-top: 0; font-size: 1.15rem;">🔴 Red Teams</h4>
-            <p style="font-size: 0.94rem; color: #cbd5e1;">Avoid interacting with monitored deception traps and honeypots during active penetration tests.</p>
+            <h4 style="color: #2563eb; margin-top: 0; font-size: 1.15rem;">🔴 Red Teams</h4>
+            <p style="font-size: 0.94rem; color: #475569;">Avoid interacting with monitored deception traps and honeypots during active penetration tests.</p>
         </div>
         """, unsafe_allow_html=True)
     with col_u2:
         st.markdown("""
         <div class="user-box">
-            <h4 style="color: #a78bfa; margin-top: 0; font-size: 1.15rem;">🤖 AI Engineers</h4>
-            <p style="font-size: 0.94rem; color: #cbd5e1;">Stress-test enterprise chatbots and harden system prompts against prompt injections and jailbreaks.</p>
+            <h4 style="color: #7c3aed; margin-top: 0; font-size: 1.15rem;">🤖 AI Engineers</h4>
+            <p style="font-size: 0.94rem; color: #475569;">Stress-test enterprise chatbots and harden system prompts against prompt injections and jailbreaks.</p>
         </div>
         """, unsafe_allow_html=True)
     with col_u3:
         st.markdown("""
         <div class="user-box">
-            <h4 style="color: #34d399; margin-top: 0; font-size: 1.15rem;">🛡️ SOC Teams</h4>
-            <p style="font-size: 0.94rem; color: #cbd5e1;">Audit external assets for honeypot artifacts and export verifiable compliance documentation.</p>
+            <h4 style="color: #059669; margin-top: 0; font-size: 1.15rem;">🛡️ SOC Teams</h4>
+            <p style="font-size: 0.94rem; color: #475569;">Audit external assets for honeypot artifacts and export verifiable compliance documentation.</p>
         </div>
         """, unsafe_allow_html=True)
     with col_u4:
         st.markdown("""
         <div class="user-box">
-            <h4 style="color: #fb7185; margin-top: 0; font-size: 1.15rem;">🎓 Academic Review</h4>
-            <p style="font-size: 0.94rem; color: #cbd5e1;">Demonstrate cutting-edge AI security and network telemetry in B.Tech final year capstone evaluations.</p>
+            <h4 style="color: #dc2626; margin-top: 0; font-size: 1.15rem;">🎓 Academic Review</h4>
+            <p style="font-size: 0.94rem; color: #475569;">Demonstrate cutting-edge AI security and network telemetry in B.Tech final year capstone evaluations.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -914,8 +925,8 @@ if st.session_state.app_mode == "landing":
     <div class="platform-footer">
         <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
             <div>
-                <strong style="color: #f8fafc; font-size: 1.1rem;">🛡️ DeceptiScan & LLM Shield (HoneyPrompt)</strong>
-                <p style="margin-top: 6px; color: #cbd5e1;">B.Tech Final Year Capstone Project in Cybersecurity & Artificial Intelligence Safety.</p>
+                <strong style="color: #0f172a; font-size: 1.1rem;">🛡️ DeceptiScan & LLM Shield (HoneyPrompt)</strong>
+                <p style="margin-top: 6px; color: #475569;">B.Tech Final Year Capstone Project in Cybersecurity & Artificial Intelligence Safety.</p>
             </div>
             <div>
                 <span class="tag-pill">Python 3.12</span>
@@ -1000,7 +1011,7 @@ else:
             st.session_state.app_mode = "landing"
             st.rerun()
     with col_w_brand:
-        st.markdown("<div style='padding-top: 6px; font-weight: 800; font-size: 1.4rem;'><span class='neon-text-emerald'>🛠️ SECURITY APPLICATION WORKSPACE</span></div>", unsafe_allow_html=True)
+        st.markdown("<div style='padding-top: 6px; font-weight: 800; font-size: 1.45rem; color: #0f172a;'>🛠️ SECURITY APPLICATION WORKSPACE</div>", unsafe_allow_html=True)
     with col_w_status:
         st.markdown("<div style='text-align: right; padding-top: 8px;'><span class='badge-cyber-emerald'>● ACTIVE AUDIT MODE</span></div>", unsafe_allow_html=True)
         
@@ -1106,7 +1117,7 @@ else:
                 with col_k3:
                     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
                     st.caption("HONEYPOT PROBABILITY")
-                    val_color = '#FB7185' if res['deception_score'] > 0.5 else '#00F5A0'
+                    val_color = '#EF4444' if res['deception_score'] > 0.5 else '#10B981'
                     st.markdown(f"<div class='metric-value' style='color: {val_color};'>{res['deception_percentage']}%</div>", unsafe_allow_html=True)
                     st.caption(f"Risk Level: **{res['risk_level']}**")
                     st.markdown("</div>", unsafe_allow_html=True)
@@ -1114,7 +1125,7 @@ else:
                 with col_k4:
                     st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
                     st.caption("OPEN SERVICES")
-                    st.markdown(f"<div class='metric-value' style='color: #00D9F5;'>{len(res['open_ports'])}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='metric-value' style='color: #2563EB;'>{len(res['open_ports'])}</div>", unsafe_allow_html=True)
                     st.caption(f"Ports: `{res['open_ports']}`")
                     st.markdown("</div>", unsafe_allow_html=True)
                     
@@ -1126,22 +1137,22 @@ else:
                         mode="gauge+number",
                         value=res["deception_percentage"],
                         domain={'x': [0, 1], 'y': [0, 1]},
-                        title={'text': "Deception Likelihood Index", 'font': {'size': 18, 'color': '#e2e8f0'}},
-                        number={'suffix': "%", 'font': {'size': 32, 'color': '#ffffff'}},
+                        title={'text': "Deception Likelihood Index", 'font': {'size': 18, 'color': '#0f172a'}},
+                        number={'suffix': "%", 'font': {'size': 32, 'color': '#0f172a'}},
                         gauge={
-                            'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#475569"},
-                            'bar': {'color': "#F43F5E" if res["is_honeypot"] else "#00F5A0"},
-                            'bgcolor': "#121727",
-                            'borderwidth': 2,
-                            'bordercolor': "#252e48",
+                            'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#94a3b8"},
+                            'bar': {'color': "#EF4444" if res["is_honeypot"] else "#10B981"},
+                            'bgcolor': "#f1f5f9",
+                            'borderwidth': 1.5,
+                            'bordercolor': "#e2e8f0",
                             'steps': [
-                                {'range': [0, 35], 'color': 'rgba(0, 245, 160, 0.15)'},
+                                {'range': [0, 35], 'color': 'rgba(16, 185, 129, 0.15)'},
                                 {'range': [35, 60], 'color': 'rgba(245, 158, 11, 0.15)'},
-                                {'range': [60, 100], 'color': 'rgba(244, 63, 94, 0.15)'}
+                                {'range': [60, 100], 'color': 'rgba(239, 68, 68, 0.15)'}
                             ]
                         }
                     ))
-                    fig_gauge.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=260, margin=dict(l=20, r=20, t=40, b=20))
+                    fig_gauge.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=260, margin=dict(l=20, r=20, t=40, b=20), font={'color': '#0f172a'})
                     st.plotly_chart(fig_gauge, use_container_width=True)
                     
                 with col_g2:
@@ -1266,7 +1277,7 @@ else:
             with col_m2:
                 st.markdown("<div class='cyber-card cyber-card-success'>", unsafe_allow_html=True)
                 st.caption("DEFENDED ATTACKS")
-                st.markdown(f"<div class='metric-value' style='color: #00F5A0;'>{llm_res['defended_count']}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='metric-value' style='color: #10B981;'>{llm_res['defended_count']}</div>", unsafe_allow_html=True)
                 st.caption(f"Defense Rate: **{llm_res['defense_rate']}%**")
                 st.markdown("</div>", unsafe_allow_html=True)
                 
@@ -1274,14 +1285,14 @@ else:
                 card_col = "cyber-card-danger" if llm_res['vulnerable_count'] > 0 else "cyber-card-success"
                 st.markdown(f"<div class='cyber-card {card_col}'>", unsafe_allow_html=True)
                 st.caption("VULNERABILITIES FOUND")
-                st.markdown(f"<div class='metric-value' style='color: #FB7185;'>{llm_res['vulnerable_count']}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='metric-value' style='color: #EF4444;'>{llm_res['vulnerable_count']}</div>", unsafe_allow_html=True)
                 st.caption(f"Vulnerability Rate: **{llm_res['vulnerability_rate']}%**")
                 st.markdown("</div>", unsafe_allow_html=True)
                 
             with col_m4:
                 st.markdown("<div class='cyber-card'>", unsafe_allow_html=True)
                 st.caption("AI POSTURE RISK")
-                risk_color = "#FB7185" if llm_res['overall_risk'] in ["CRITICAL", "HIGH"] else "#00F5A0"
+                risk_color = "#EF4444" if llm_res['overall_risk'] in ["CRITICAL", "HIGH"] else "#10B981"
                 st.markdown(f"<div class='metric-value' style='color: {risk_color};'>{llm_res['overall_risk']}</div>", unsafe_allow_html=True)
                 st.caption("Status: Audit Complete")
                 st.markdown("</div>", unsafe_allow_html=True)
@@ -1299,13 +1310,13 @@ else:
                     pie_data, values="Count", names="Outcome",
                     color="Outcome",
                     color_discrete_map={
-                        "Defended (Safe)": "#00F5A0",
-                        "Vulnerable (Breached)": "#F43F5E",
+                        "Defended (Safe)": "#10B981",
+                        "Vulnerable (Breached)": "#EF4444",
                         "Suspicious": "#F59E0B"
                     },
                     hole=0.45
                 )
-                fig_pie.update_layout(paper_bgcolor='rgba(0,0,0,0)', height=260, margin=dict(l=10, r=10, t=10, b=10))
+                fig_pie.update_layout(paper_bgcolor='rgba(0,0,0,0)', height=260, margin=dict(l=10, r=10, t=10, b=10), font={'color': '#0f172a'})
                 st.plotly_chart(fig_pie, use_container_width=True)
                 
             with col_c2:
