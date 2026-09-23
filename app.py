@@ -3,11 +3,19 @@ DeceptiScan & LLM Shield (HoneyPrompt)
 Unified Network Deception & AI Prompt Security Platform
 """
 
+import sys
 import os
 import json
 import time
 import math
+import importlib
 from pathlib import Path
+
+# Cleanly evict cached submodules so Streamlit daemon always loads fresh files
+for mod_name in list(sys.modules.keys()):
+    if mod_name.startswith("modules."):
+        sys.modules.pop(mod_name, None)
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
