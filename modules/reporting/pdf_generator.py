@@ -90,10 +90,10 @@ class SecurityAuditPDF:
         
         pdf.ln(8)
         
-        # --- SECTION 2: MODULE 1 HONEYPOT AUDIT ---
+        # --- SECTION 2: MODULE 1 HONEYPOT & OSINT AUDIT ---
         pdf.set_text_color(15, 23, 42)
         pdf.set_font("Helvetica", "B", 13)
-        pdf.cell(0, 7, "2. Network Deception & Honeypot Analysis", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+        pdf.cell(0, 7, "2. Network Deception, OSINT & Honeypot Analysis", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
         pdf.line(15, pdf.get_y(), 195, pdf.get_y())
         pdf.ln(4)
         
@@ -102,6 +102,19 @@ class SecurityAuditPDF:
             pdf.cell(45, 6, "Scanned Target:", new_x=XPos.RIGHT, new_y=YPos.TOP)
             pdf.set_font("Helvetica", "B", 10)
             pdf.cell(0, 6, f"{honeypot_result.get('target')} ({honeypot_result.get('ip')})", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            
+            # OSINT Details
+            osint = honeypot_result.get("osint", {})
+            if osint and osint.get("available"):
+                pdf.set_font("Helvetica", "", 10)
+                pdf.cell(45, 6, "OSINT Geolocation:", new_x=XPos.RIGHT, new_y=YPos.TOP)
+                pdf.set_font("Helvetica", "B", 10)
+                pdf.cell(0, 6, f"{osint.get('city', 'Unknown')}, {osint.get('country', 'Unknown')} | ISP: {osint.get('isp', 'Unknown')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+                
+                pdf.set_font("Helvetica", "", 10)
+                pdf.cell(45, 6, "ASN & Reverse DNS:", new_x=XPos.RIGHT, new_y=YPos.TOP)
+                pdf.set_font("Helvetica", "", 10)
+                pdf.cell(0, 6, f"{osint.get('asn', 'N/A')} | {osint.get('reverse_dns', 'N/A')}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             
             pdf.set_font("Helvetica", "", 10)
             pdf.cell(45, 6, "Deception Score:", new_x=XPos.RIGHT, new_y=YPos.TOP)
@@ -125,7 +138,7 @@ class SecurityAuditPDF:
             # Open Ports Table
             ports = honeypot_result.get("open_ports", [])
             pdf.set_font("Helvetica", "B", 9)
-            pdf.cell(0, 5, f"Open Services Detected: {len(ports)}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
+            pdf.cell(0, 5, f"Open Services Detected: {len(ports)} (Ports: {ports})", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
             
         else:
             pdf.set_font("Helvetica", "I", 9)
@@ -182,7 +195,7 @@ class SecurityAuditPDF:
                 
                 pdf.set_text_color(15, 23, 42)
                 pdf.set_font("Helvetica", "", 8)
-                pdf.cell(30, 5, str(r.get("severity")), border=1, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
+                pdf.cell(30, 5, str(r.get("severity")), border=1, new_x=XPos.LMARGIN, new_y=YPos.NEXT)
                 
         else:
             pdf.set_font("Helvetica", "I", 9)

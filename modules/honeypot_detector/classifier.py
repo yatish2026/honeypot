@@ -9,6 +9,7 @@ import joblib
 from config import MODELS_DIR, HONEYPOT_RISK_THRESHOLDS
 from modules.honeypot_detector.feature_extractor import extract_features_from_scan, FEATURE_NAMES
 from modules.honeypot_detector.signatures import match_signatures, evaluate_heuristics
+from modules.honeypot_detector.osint_helper import OSINTIntelligenceHelper
 
 
 class HoneypotClassifier:
@@ -17,6 +18,7 @@ class HoneypotClassifier:
     def __init__(self):
         self.model_path = MODELS_DIR / "honeypot_model.joblib"
         self.model_bundle = None
+        self.osint_helper = OSINTIntelligenceHelper()
         self._load_model()
         
     def _load_model(self):
@@ -46,19 +48,25 @@ class HoneypotClassifier:
                 "signatures_matched": [],
                 "anomalies_detected": [],
                 "ml_probability": 0.0,
-                "reasons": ["Scan failed or host unreachable."]
+                "reasons": ["Scan failed or host unreachable."],
+                "osint": {"available": False, "message": "Target unreachable."}
             }
             
         open_ports = scan_result.get("open_ports", [])
         banners = scan_result.get("banners", {})
+        target_ip = scan_result.get("ip", "")
+        target_host = scan_result.get("target", "")
         
-        # 1. Signature Matching
+        # 1. OSINT Geolocation & ISP Intelligence Lookup
+        osint_meta = self.osint_helper.lookup(target_ip, hostname=target_host)
+        
+        # 2. Signature Matching
         sig_matches = match_signatures(banners)
         
-        # 2. Heuristic Anomalies
+        # 3. Heuristic Anomalies
         anomalies = evaluate_heuristics(open_ports, banners)
         
-        # 3. Machine Learning Inference
+        # 4. Machine Learning Inference
         features = extract_features_from_scan(scan_result)
         
         if self.model_bundle and "model" in self.model_bundle:
@@ -72,8 +80,7 @@ class HoneypotClassifier:
             sig_max = max([s["confidence"] for s in sig_matches], default=0.0)
             ml_prob = max(sig_max, min(1.0, heuristic_weight + (0.5 if 2222 in open_ports else 0.0)))
             
-        # 4. Ensemble Score Fusion
-        # If definitive signature matched (e.g. Cowrie/Dionaea banner), score is heavily weighted to signature confidence
+        # 5. Ensemble Score Fusion
         if sig_matches:
             highest_sig_conf = max(s["confidence"] for s in sig_matches)
             final_score = max(highest_sig_conf, (highest_sig_conf * 0.7 + ml_prob * 0.3))
@@ -83,7 +90,7 @@ class HoneypotClassifier:
             
         final_score = round(float(min(1.0, max(0.0, final_score))), 3)
         
-        # 5. Risk Level Assignment
+        # 6. Risk Level Assignment
         if final_score >= HONEYPOT_RISK_THRESHOLDS["CRITICAL"]:
             risk_level = "CRITICAL"
         elif final_score >= HONEYPOT_RISK_THRESHOLDS["HIGH"]:
@@ -95,7 +102,7 @@ class HoneypotClassifier:
             
         is_honeypot = (final_score >= 0.50)
         
-        # 6. Generate Explainability Reasons
+        # 7. Generate Explainability Reasons
         reasons = []
         for s in sig_matches:
             reasons.append(f"Matched known signature for {s['honeypot_name']} on port {s['matched_port']}.")
@@ -107,8 +114,8 @@ class HoneypotClassifier:
             reasons.append("Services and protocol banners exhibit authentic production distributions.")
             
         return {
-            "target": scan_result.get("target"),
-            "ip": scan_result.get("ip"),
+            "target": target_host,
+            "ip": target_ip,
             "is_honeypot": is_honeypot,
             "deception_score": final_score,
             "deception_percentage": round(final_score * 100, 1),
@@ -120,5 +127,6 @@ class HoneypotClassifier:
             "identified_honeypot": sig_matches[0]["honeypot_name"] if sig_matches else ("Suspected Honeypot" if is_honeypot else "Legitimate Production Host"),
             "open_ports": open_ports,
             "banners": banners,
-            "port_results": scan_result.get("port_results", [])
+            "port_results": scan_result.get("port_results", []),
+            "osint": osint_meta
         }
