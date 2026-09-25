@@ -6,7 +6,7 @@ import time
 from typing import Dict, Any, Optional
 import requests
 
-from config import GEMINI_API_KEY, OPENAI_API_KEY
+from config import GEMINI_API_KEY, OPENAI_API_KEY, OPENROUTER_API_KEY
 
 
 class BaseLLMAdapter:
@@ -234,7 +234,7 @@ class OpenRouterLLMAdapter(BaseLLMAdapter):
     """OpenRouter API connector (supports Claude, Llama, Gemini, Mistral, GPT models)."""
     
     def __init__(self, api_key: Optional[str] = None, model_name: str = "google/gemini-2.5-flash-lite"):
-        self.api_key = api_key
+        self.api_key = api_key or OPENROUTER_API_KEY
         self.model_name = model_name or "google/gemini-2.5-flash-lite"
 
     def generate_response(self, system_prompt: str, user_prompt: str, temperature: float = 0.2) -> Dict[str, Any]:

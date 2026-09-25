@@ -1,10 +1,16 @@
 import os
+import sys
 from pathlib import Path
-from dotenv import load_dotenv
-
-load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
 
 # Directory Paths
 MODULES_DIR = BASE_DIR / "modules"
@@ -13,10 +19,12 @@ MODELS_DIR = MODULES_DIR / "honeypot_detector" / "models"
 PAYLOADS_DIR = MODULES_DIR / "prompt_shield" / "payloads"
 REPORTS_DIR = BASE_DIR / "reports"
 
-# Ensure directories exist
-MODELS_DIR.mkdir(parents=True, exist_ok=True)
-PAYLOADS_DIR.mkdir(parents=True, exist_ok=True)
-REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+# Ensure directories exist safely
+for d in [MODELS_DIR, PAYLOADS_DIR, REPORTS_DIR]:
+    try:
+        d.mkdir(parents=True, exist_ok=True)
+    except Exception:
+        pass
 
 # API Keys (Can be set via .env or Streamlit UI sidebar)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")

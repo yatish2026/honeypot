@@ -11,6 +11,11 @@ import math
 import importlib
 from pathlib import Path
 
+# Ensure project root is in sys.path for Streamlit Cloud and local environments
+CURRENT_DIR = Path(__file__).resolve().parent
+if str(CURRENT_DIR) not in sys.path:
+    sys.path.insert(0, str(CURRENT_DIR))
+
 # Cleanly evict cached submodules so Streamlit daemon always loads fresh files
 for mod_name in list(sys.modules.keys()):
     if mod_name.startswith("modules."):
