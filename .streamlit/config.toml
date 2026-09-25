@@ -1,8 +1,8 @@
 [theme]
 base = "light"
-primaryColor = "#2563EB"
-backgroundColor = "#F8FAFC"
-secondaryBackgroundColor = "#FFFFFF"
+primaryColor = "#3B82F6"
+backgroundColor = "#EBF2F7"
+secondaryBackgroundColor = "#E2E8F0"
 textColor = "#0F172A"
 font = "sans serif"
 
@@ -10,3 +10,4 @@ font = "sans serif"
 headless = true
 enableCORS = false
 enableXsrfProtection = false
+

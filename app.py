@@ -41,6 +41,14 @@ from modules.prompt_shield.evaluator import VulnerabilityEvaluator
 from modules.reporting.metrics import compute_unified_risk_matrix, export_audit_json
 from modules.reporting.pdf_generator import SecurityAuditPDF
 
+# Asset Image Paths
+ASSETS_DIR = Path(__file__).parent / "assets"
+HERO_BANNER_PATH = ASSETS_DIR / "hero_banner.jpg"
+HONEYPOT_IMG_PATH = ASSETS_DIR / "honeypot_scanner.jpg"
+LLM_IMG_PATH = ASSETS_DIR / "llm_prompt_tester.jpg"
+DEFENSE_IMG_PATH = ASSETS_DIR / "defense_studio.jpg"
+REPORT_IMG_PATH = ASSETS_DIR / "audit_report.jpg"
+
 # Page Configuration
 st.set_page_config(
     page_title="DeceptiScan & LLM Shield | Cyber Deception & AI Defense",
@@ -77,11 +85,11 @@ hide_sidebar_css = """
     }
 """ if st.session_state.app_mode == "landing" else ""
 
-# Human-Designed Enterprise Light Theme (Clean, High-Contrast & Crisp)
+# Sophisticated Cool-Tinted Light Theme (Frost Slate, Ambient Mesh, Crisp Contrast, Zero Stark White & Zero Dark)
 st.markdown(f"""
 <style>
     {hide_sidebar_css}
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
     
     html, body, [class*="css"], [class*="st-"], .stApp {{
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
@@ -97,24 +105,35 @@ st.markdown(f"""
     
     code, pre, .stCode, [data-testid="stCodeBlock"] * {{
         font-family: 'JetBrains Mono', monospace !important;
-        font-size: 0.96rem !important;
+        font-size: 0.95rem !important;
     }}
     
     /* =========================================================================
-       1. CRISP ENTERPRISE LIGHT CANVAS & CLEAN BACKGROUND
+       1. COOL-TINTED FROST SLATE BACKGROUND & AMBIENT MESH
        ========================================================================= */
     .stApp {{
-        background: radial-gradient(circle at 15% 10%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
-                    radial-gradient(circle at 85% 20%, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
-                    radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.04) 0%, transparent 50%),
-                    #f8fafc !important;
+        background: radial-gradient(circle at 12% 10%, rgba(59, 130, 246, 0.09) 0%, transparent 45%),
+                    radial-gradient(circle at 88% 15%, rgba(139, 92, 246, 0.08) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 85%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 20% 90%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+                    linear-gradient(180deg, #ebf2f7 0%, #e2e8f0 100%) !important;
+        color: #0f172a !important;
+    }}
+    
+    /* Sidebar styling in tinted cool tone */
+    [data-testid="stSidebar"] {{
+        background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%) !important;
+        border-right: 1.5px solid #94a3b8 !important;
+    }}
+    
+    [data-testid="stSidebar"] * {{
         color: #0f172a !important;
     }}
     
     /* Global Typography & Content Hierarchy */
     p, span, div, li, td, th {{
-        color: #334155;
-        font-size: 1.05rem;
+        color: #1e293b;
+        font-size: 1.04rem;
         line-height: 1.65;
     }}
 
@@ -122,20 +141,20 @@ st.markdown(f"""
         font-size: 1.85rem !important;
         font-weight: 800 !important;
         color: #0f172a !important;
-        margin-top: 10px !important;
+        margin-top: 8px !important;
         margin-bottom: 6px !important;
     }}
     
     [data-testid="stCaptionContainer"], .stCaption, small {{
-        font-size: 1.05rem !important;
-        color: #64748b !important;
-        font-weight: 500 !important;
+        font-size: 1.02rem !important;
+        color: #475569 !important;
+        font-weight: 600 !important;
         line-height: 1.6 !important;
         margin-bottom: 12px !important;
     }}
 
     /* =========================================================================
-       2. TACTILE ENTERPRISE BUTTONS (LIGHT THEME, CRISP CONTRAST)
+       2. TACTILE ENTERPRISE BUTTONS (COOL PALETTE, LUMINOUS GRADIENTS)
        ========================================================================= */
     button, 
     .stButton > button, 
@@ -147,12 +166,12 @@ st.markdown(f"""
     button[kind="secondary"],
     button[kind="primary"],
     button[kind="header"] {{
-        border-radius: 10px !important;
+        border-radius: 12px !important;
         font-weight: 700 !important;
-        font-size: 1.05rem !important;
+        font-size: 1.03rem !important;
         padding: 12px 24px !important;
         letter-spacing: 0.2px !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -165,11 +184,10 @@ st.markdown(f"""
     button[kind="primary"], 
     .stButton > button[kind="primary"],
     [data-testid="stDownloadButton"] > button {{
-        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
-        background-color: #2563EB !important;
+        background: linear-gradient(135deg, #4338ca 0%, #2563eb 50%, #0284c7 100%) !important;
         color: #ffffff !important;
         border: none !important;
-        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35) !important;
     }}
     
     [data-testid="baseButton-primary"] *, 
@@ -179,7 +197,7 @@ st.markdown(f"""
     [data-testid="stDownloadButton"] > button * {{
         color: #ffffff !important;
         font-weight: 700 !important;
-        font-size: 1.05rem !important;
+        font-size: 1.03rem !important;
     }}
     
     [data-testid="baseButton-primary"]:hover, 
@@ -188,8 +206,8 @@ st.markdown(f"""
     .stButton > button[kind="primary"]:hover,
     [data-testid="stDownloadButton"] > button:hover {{
         transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5) !important;
-        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.5) !important;
+        background: linear-gradient(135deg, #3730a3 0%, #1d4ed8 50%, #0369a1 100%) !important;
     }}
 
     /* Secondary Action Buttons */
@@ -197,11 +215,11 @@ st.markdown(f"""
     [data-testid="stBaseButton-secondary"],
     button[kind="secondary"],
     .stButton > button {{
-        background: #ffffff !important;
-        background-color: #ffffff !important;
+        background: #e2e8f0 !important;
+        background-color: #e2e8f0 !important;
         color: #0f172a !important;
         border: 1.5px solid #cbd5e1 !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
     }}
     
     [data-testid="baseButton-secondary"] *, 
@@ -217,112 +235,144 @@ st.markdown(f"""
     [data-testid="stBaseButton-secondary"]:hover,
     button[kind="secondary"]:hover,
     .stButton > button:hover {{
-        background: #f8fafc !important;
-        background-color: #f8fafc !important;
-        border-color: #2563eb !important;
-        color: #2563eb !important;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
+        background: #dbeafe !important;
+        background-color: #dbeafe !important;
+        border-color: #3b82f6 !important;
+        color: #1d4ed8 !important;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18) !important;
         transform: translateY(-2px) !important;
     }}
 
     /* =========================================================================
-       3. WORKSPACE RADIO NAVIGATION
+       3. WORKSPACE RADIO & TAB NAVIGATION
        ========================================================================= */
     div[data-testid="stRadio"] {{
-        background: #f1f5f9 !important;
-        padding: 16px 22px !important;
+        background: #e2e8f0 !important;
+        padding: 14px 18px !important;
         border-radius: 16px !important;
-        border: 1.5px solid #e2e8f0 !important;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
-        margin-bottom: 25px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03) !important;
+        margin-bottom: 22px !important;
     }}
     
     div[data-testid="stRadio"] > label {{
-        color: #1e293b !important;
-        font-size: 1.15rem !important;
+        color: #0f172a !important;
+        font-size: 1.12rem !important;
         font-weight: 800 !important;
-        margin-bottom: 12px !important;
+        margin-bottom: 10px !important;
         display: block !important;
-        letter-spacing: 0.5px !important;
+        letter-spacing: 0.4px !important;
     }}
     
     div[data-testid="stRadio"] div[role="radiogroup"] {{
         display: flex !important;
         flex-wrap: wrap !important;
-        gap: 12px !important;
+        gap: 10px !important;
     }}
     
     div[data-testid="stRadio"] div[role="radiogroup"] label {{
-        background: #ffffff !important;
+        background: #f1f5f9 !important;
         border: 1.5px solid #cbd5e1 !important;
         border-radius: 12px !important;
-        padding: 12px 22px !important;
+        padding: 10px 20px !important;
         margin-right: 0px !important;
         cursor: pointer !important;
         transition: all 0.2s ease !important;
         display: flex !important;
         align-items: center !important;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02) !important;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03) !important;
     }}
     
     div[data-testid="stRadio"] div[role="radiogroup"] label:hover {{
-        border-color: #2563eb !important;
-        background: #f8fafc !important;
+        border-color: #3b82f6 !important;
+        background: #e2e8f0 !important;
     }}
     
     div[data-testid="stRadio"] div[role="radiogroup"] label p, 
     div[data-testid="stRadio"] div[role="radiogroup"] label span, 
     div[data-testid="stRadio"] div[role="radiogroup"] label div {{
-        color: #1e293b !important;
-        font-size: 1.12rem !important;
+        color: #0f172a !important;
+        font-size: 1.08rem !important;
         font-weight: 700 !important;
         letter-spacing: 0.2px !important;
     }}
     
     div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"],
     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) {{
-        background: rgba(37, 99, 235, 0.1) !important;
+        background: rgba(59, 130, 246, 0.16) !important;
         border: 2px solid #2563eb !important;
-        box-shadow: 0 0 16px rgba(37, 99, 235, 0.2) !important;
+        box-shadow: 0 0 16px rgba(37, 99, 235, 0.25) !important;
     }}
     
     div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"] p,
     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) p {{
-        color: #2563eb !important;
+        color: #1d4ed8 !important;
         font-weight: 800 !important;
     }}
 
+    /* Form Inputs, Selectboxes, and Textareas */
+    div[data-baseweb="input"], 
+    div[data-baseweb="select"] > div, 
+    div[data-baseweb="textarea"] {{
+        background-color: #f1f5f9 !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 12px !important;
+        color: #0f172a !important;
+    }}
+    div[data-baseweb="input"]:focus-within, 
+    div[data-baseweb="select"] > div:focus-within, 
+    div[data-baseweb="textarea"]:focus-within {{
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+    }}
+    input, textarea {{
+        color: #0f172a !important;
+    }}
+
+    /* Expander styling */
+    [data-testid="stExpander"] {{
+        background: #f1f5f9 !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 14px !important;
+        margin-bottom: 12px !important;
+    }}
+    [data-testid="stExpander"] summary {{
+        color: #0f172a !important;
+        font-weight: 700 !important;
+    }}
+
     /* =========================================================================
-       4. CARDS & CONTAINERS
+       4. CARDS & HERO CONTAINERS (FROSTED SLATE WITH NO STARK WHITE)
        ========================================================================= */
     .hero-box {{
-        background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
-        border: 1.5px solid #e2e8f0;
+        background: linear-gradient(135deg, rgba(241, 245, 249, 0.96) 0%, rgba(226, 232, 240, 0.94) 100%);
+        border: 1.5px solid #cbd5e1;
         border-radius: 24px;
-        padding: 44px;
-        margin-bottom: 36px;
-        box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 25px rgba(37, 99, 235, 0.05);
+        padding: 36px 40px;
+        margin-bottom: 32px;
+        box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.08), 0 0 25px rgba(59, 130, 246, 0.06);
         position: relative;
+        backdrop-filter: blur(12px);
     }}
     
     .hero-eyebrow {{
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: rgba(37, 99, 235, 0.08);
-        color: #2563eb;
-        border: 1.5px solid rgba(37, 99, 235, 0.25);
+        background: rgba(59, 130, 246, 0.12);
+        color: #1d4ed8;
+        border: 1.5px solid rgba(59, 130, 246, 0.3);
         padding: 6px 18px;
         border-radius: 30px;
         font-size: 0.92rem;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: 0.8px;
         text-transform: uppercase;
-        margin-bottom: 18px;
+        margin-bottom: 16px;
     }}
     
     .hero-heading {{
-        font-size: 3.2rem;
+        font-size: 3.1rem;
         font-weight: 800;
         line-height: 1.18;
         letter-spacing: -1.2px;
@@ -331,17 +381,17 @@ st.markdown(f"""
     }}
     
     .brand-gradient-text {{
-        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #059669 100%);
+        background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #0284c7 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }}
     
     .hero-desc {{
-        font-size: 1.22rem;
-        color: #475569;
+        font-size: 1.18rem;
+        color: #334155;
         max-width: 860px;
         line-height: 1.7;
-        margin-bottom: 28px;
+        margin-bottom: 24px;
     }}
     
     .stats-bar {{
@@ -352,11 +402,11 @@ st.markdown(f"""
     }}
     
     .stat-card {{
-        background: #ffffff;
-        border: 1.5px solid #e2e8f0;
+        background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+        border: 1.5px solid #cbd5e1;
         border-radius: 14px;
         padding: 16px 20px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
     }}
     
     .stat-val {{
@@ -368,43 +418,44 @@ st.markdown(f"""
     
     .stat-lbl {{
         font-size: 0.88rem;
-        color: #64748b;
+        color: #475569;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.6px;
     }}
     
     .module-card-box {{
-        background: #ffffff;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 18px;
-        padding: 24px;
+        background: linear-gradient(180deg, rgba(241, 245, 249, 0.96) 0%, rgba(226, 232, 240, 0.88) 100%);
+        border: 1.5px solid #cbd5e1;
+        border-radius: 20px;
+        padding: 20px;
         height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        transition: all 0.25s ease;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+        overflow: hidden;
     }}
     
     .module-card-box:hover {{
         border-color: #3b82f6;
         transform: translateY(-4px);
-        box-shadow: 0 12px 28px -5px rgba(37, 99, 235, 0.15);
+        box-shadow: 0 16px 32px -6px rgba(37, 99, 235, 0.2);
     }}
     
     .module-title {{
-        font-size: 1.45rem;
+        font-size: 1.4rem;
         font-weight: 800;
         color: #0f172a;
-        margin-top: 14px;
-        margin-bottom: 10px;
+        margin-top: 12px;
+        margin-bottom: 8px;
     }}
     
     .module-desc {{
         font-size: 1.02rem;
-        color: #475569;
-        line-height: 1.65;
+        color: #334155;
+        line-height: 1.6;
         margin-bottom: 16px;
     }}
     
@@ -414,19 +465,20 @@ st.markdown(f"""
         border-radius: 6px;
         font-size: 0.84rem;
         font-weight: 700;
-        background: #f1f5f9;
-        color: #1e293b;
+        background: #e2e8f0;
+        color: #0f172a;
         margin-right: 6px;
         margin-bottom: 6px;
         border: 1px solid #cbd5e1;
     }}
     
     .pipeline-step {{
-        background: #ffffff;
-        border: 1.5px solid #e2e8f0;
+        background: linear-gradient(180deg, rgba(241, 245, 249, 0.96) 0%, rgba(226, 232, 240, 0.88) 100%);
+        border: 1.5px solid #cbd5e1;
         border-radius: 16px;
         padding: 24px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+        height: 100%;
     }}
     
     .step-num {{
@@ -445,49 +497,41 @@ st.markdown(f"""
         margin-bottom: 10px;
     }}
     
-    .user-box {{
-        background: #ffffff;
-        border: 1.5px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 22px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    }}
-    
     .badge-cyber-emerald {{
-        background: rgba(16, 185, 129, 0.12);
-        color: #059669;
-        border: 1.5px solid rgba(16, 185, 129, 0.35);
+        background: rgba(16, 185, 129, 0.16);
+        color: #047857;
+        border: 1.5px solid rgba(16, 185, 129, 0.45);
         padding: 5px 14px;
-        border-radius: 6px;
+        border-radius: 8px;
         font-size: 0.9rem;
         font-weight: 800;
     }}
     
     .badge-cyber-coral {{
-        background: rgba(239, 68, 68, 0.12);
-        color: #dc2626;
-        border: 1.5px solid rgba(239, 68, 68, 0.35);
+        background: rgba(239, 68, 68, 0.16);
+        color: #b91c1c;
+        border: 1.5px solid rgba(239, 68, 68, 0.45);
         padding: 5px 14px;
-        border-radius: 6px;
+        border-radius: 8px;
         font-size: 0.9rem;
         font-weight: 800;
     }}
     
     .cyber-card {{
-        background: #ffffff;
-        border: 1.5px solid #e2e8f0;
+        background: linear-gradient(180deg, rgba(241, 245, 249, 0.96) 0%, rgba(226, 232, 240, 0.85) 100%);
+        border: 1.5px solid #cbd5e1;
         border-radius: 16px;
         padding: 22px;
         margin-bottom: 18px;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
     }}
     
     .cyber-card-danger {{
-        border-left: 5px solid #EF4444 !important;
+        border-left: 5px solid #dc2626 !important;
     }}
     
     .cyber-card-success {{
-        border-left: 5px solid #10B981 !important;
+        border-left: 5px solid #059669 !important;
     }}
     
     .metric-value {{
@@ -498,15 +542,32 @@ st.markdown(f"""
     }}
     
     .osint-card {{
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        background: linear-gradient(135deg, rgba(241, 245, 249, 0.98) 0%, rgba(226, 232, 240, 0.92) 100%);
+        border: 1.5px solid #94a3b8;
+        border-radius: 18px;
+        padding: 22px 26px;
+        margin-bottom: 24px;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    }}
+
+    .tab-header-card {{
+        background: linear-gradient(135deg, rgba(241, 245, 249, 0.98) 0%, rgba(226, 232, 240, 0.9) 100%);
         border: 1.5px solid #cbd5e1;
-        border-radius: 16px;
+        border-radius: 18px;
         padding: 20px 24px;
-        margin-bottom: 22px;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+        margin-bottom: 24px;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+    }}
+
+    /* Rounded image styling */
+    [data-testid="stImage"] img {{
+        border-radius: 14px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06) !important;
     }}
 </style>
 """, unsafe_allow_html=True)
+
 
 # Instantiate Core Engines
 scanner = NetworkScanner(timeout=1.5, max_threads=15)
@@ -652,7 +713,7 @@ if st.session_state.app_mode == "landing":
     with col_nav1:
         st.markdown("""
         <div style="padding-top: 8px;">
-            <span style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; color: #0f172a;">
+            <span style="font-size: 1.55rem; font-weight: 800; letter-spacing: -0.5px; color: #0f172a;">
                 🛡️ DECEPTISCAN <span style="color: #2563eb;">//</span> LLM SHIELD
             </span>
         </div>
@@ -668,9 +729,12 @@ if st.session_state.app_mode == "landing":
 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Hero Box
-    st.markdown("""
-    <div class="hero-box">
+    # 2-Column Hero Section with Banner Graphic
+    st.markdown('<div class="hero-box">', unsafe_allow_html=True)
+    col_hero_text, col_hero_img = st.columns([1.3, 1], gap="large")
+    
+    with col_hero_text:
+        st.markdown("""
         <div class="hero-eyebrow">
             <span>🛡️ B.Tech Capstone Cyber & AI Security Platform</span>
         </div>
@@ -680,6 +744,24 @@ if st.session_state.app_mode == "landing":
         <div class="hero-desc">
             An end-to-end security testing ecosystem combining <strong>Network Honeypot Identification</strong> with <strong>OWASP Top 10 LLM Red-Teaming</strong>, live <strong>OSINT IP Intelligence</strong>, and automated <strong>1-Click AI Prompt Hardening</strong>.
         </div>
+        """, unsafe_allow_html=True)
+        
+        col_h_b1, col_h_b2 = st.columns(2)
+        with col_h_b1:
+            if st.button("🚀 Launch Live Workspace", key="hero_enter_btn", type="primary", use_container_width=True):
+                st.session_state.app_mode = "workspace"
+                st.rerun()
+        with col_h_b2:
+            if st.button("📖 Read Viva & Docs Hub", key="hero_docs_btn", use_container_width=True):
+                st.session_state.app_mode = "workspace"
+                st.session_state.workspace_tab = "🎓 Viva & Docs Hub"
+                st.rerun()
+                
+    with col_hero_img:
+        if HERO_BANNER_PATH.exists():
+            st.image(str(HERO_BANNER_PATH), use_container_width=True)
+            
+    st.markdown("""
         <div class="stats-bar">
             <div class="stat-card">
                 <div class="stat-val">20</div>
@@ -705,8 +787,10 @@ if st.session_state.app_mode == "landing":
     col_f1, col_f2, col_f3 = st.columns(3)
     
     with col_f1:
+        st.markdown('<div class="module-card-box">', unsafe_allow_html=True)
+        if HONEYPOT_IMG_PATH.exists():
+            st.image(str(HONEYPOT_IMG_PATH), use_container_width=True)
         st.markdown("""
-        <div class="module-card-box">
             <div>
                 <div class="module-title">🔍 Honeypot & OSINT Scanner</div>
                 <div class="module-desc">
@@ -727,8 +811,10 @@ if st.session_state.app_mode == "landing":
             st.rerun()
 
     with col_f2:
+        st.markdown('<div class="module-card-box">', unsafe_allow_html=True)
+        if LLM_IMG_PATH.exists():
+            st.image(str(LLM_IMG_PATH), use_container_width=True)
         st.markdown("""
-        <div class="module-card-box">
             <div>
                 <div class="module-title">🤖 LLM Prompt Red-Teamer</div>
                 <div class="module-desc">
@@ -749,8 +835,10 @@ if st.session_state.app_mode == "landing":
             st.rerun()
 
     with col_f3:
+        st.markdown('<div class="module-card-box">', unsafe_allow_html=True)
+        if DEFENSE_IMG_PATH.exists():
+            st.image(str(DEFENSE_IMG_PATH), use_container_width=True)
         st.markdown("""
-        <div class="module-card-box">
             <div>
                 <div class="module-title">🛡️ 1-Click Auto-Hardener Studio</div>
                 <div class="module-desc">
@@ -774,8 +862,10 @@ if st.session_state.app_mode == "landing":
     
     col_f4, col_f5 = st.columns(2)
     with col_f4:
+        st.markdown('<div class="module-card-box">', unsafe_allow_html=True)
+        if REPORT_IMG_PATH.exists():
+            st.image(str(REPORT_IMG_PATH), use_container_width=True)
         st.markdown("""
-        <div class="module-card-box">
             <div>
                 <div class="module-title">📊 Executive Audit & PDF Report</div>
                 <div class="module-desc">
@@ -798,7 +888,7 @@ if st.session_state.app_mode == "landing":
         st.markdown("""
         <div class="module-card-box" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
             <div>
-                <div style="font-size: 2.8rem; margin-bottom: 10px;">🎓</div>
+                <div style="font-size: 3.2rem; margin-bottom: 10px;">🎓</div>
                 <div class="module-title">Viva & Technical Architecture Hub</div>
                 <div class="module-desc">
                     Comprehensive documentation center designed for college project reviews, academic viva examinations, methodology breakdown, and presentation Q&A.
@@ -807,6 +897,7 @@ if st.session_state.app_mode == "landing":
                     <span class="tag-pill">Architecture Diagrams</span>
                     <span class="tag-pill">Viva Q&A</span>
                     <span class="tag-pill">OWASP References</span>
+                    <span class="tag-pill">Defense Models</span>
                 </div>
             </div>
         </div>
@@ -826,7 +917,7 @@ if st.session_state.app_mode == "landing":
         <div class="pipeline-step">
             <div class="step-num">STEP 01</div>
             <div class="step-name">Ingress & OSINT Fingerprint</div>
-            <p style="color: #475569; font-size: 0.98rem; line-height: 1.6;">
+            <p style="color: #334155; font-size: 0.98rem; line-height: 1.6;">
                 Probes target IPs across standard & deception ports, capturing protocol handshakes, latency profiles, banner entropy, and live OSINT Geolocation.
             </p>
         </div>
@@ -836,7 +927,7 @@ if st.session_state.app_mode == "landing":
         <div class="pipeline-step">
             <div class="step-num" style="color: #7c3aed;">STEP 02</div>
             <div class="step-name">ML & Adversarial Probing</div>
-            <p style="color: #475569; font-size: 0.98rem; line-height: 1.6;">
+            <p style="color: #334155; font-size: 0.98rem; line-height: 1.6;">
                 Random Forest classifies deception likelihood while the AI Red-Team engine injects OWASP LLM01/07 payloads to test refusal boundaries.
             </p>
         </div>
@@ -846,7 +937,7 @@ if st.session_state.app_mode == "landing":
         <div class="pipeline-step">
             <div class="step-num" style="color: #059669;">STEP 03</div>
             <div class="step-name">1-Click Auto-Harden & PDF</div>
-            <p style="color: #475569; font-size: 0.98rem; line-height: 1.6;">
+            <p style="color: #334155; font-size: 0.98rem; line-height: 1.6;">
                 Generates production-ready XML/Sandwich defense templates and compiles an executive PDF security report for compliance and review.
             </p>
         </div>
@@ -952,8 +1043,13 @@ else:
     # WORKSPACE TAB 1: HONEYPOT SCANNER & OSINT INTELLIGENCE
     # -------------------------------------------------------------
     if active_tab == "🔍 Honeypot Scanner":
-        st.subheader("🔍 Module 1: Network Deception, OSINT & Honeypot Identification")
-        st.caption("Probes network targets, extracts protocol banners, gathers real-time OSINT IP Geolocation, and runs ML Deception Classifier.")
+        col_th1, col_th2 = st.columns([3, 1])
+        with col_th1:
+            st.subheader("🔍 Module 1: Network Deception, OSINT & Honeypot Identification")
+            st.caption("Probes network targets, extracts protocol banners, gathers real-time OSINT IP Geolocation, and runs ML Deception Classifier.")
+        with col_th2:
+            if HONEYPOT_IMG_PATH.exists():
+                st.image(str(HONEYPOT_IMG_PATH), use_container_width=True)
         
         col_t1, col_t2 = st.columns([3, 1])
         with col_t1:
@@ -1090,9 +1186,9 @@ else:
                         gauge={
                             'axis': {'range': [0, 100], 'tickwidth': 1, 'tickcolor': "#94a3b8"},
                             'bar': {'color': "#EF4444" if res["is_honeypot"] else "#10B981"},
-                            'bgcolor': "#f1f5f9",
+                            'bgcolor': "#e2e8f0",
                             'borderwidth': 1.5,
-                            'bordercolor': "#e2e8f0",
+                            'bordercolor': "#cbd5e1",
                             'steps': [
                                 {'range': [0, 35], 'color': 'rgba(16, 185, 129, 0.15)'},
                                 {'range': [35, 60], 'color': 'rgba(245, 158, 11, 0.15)'},
@@ -1139,8 +1235,13 @@ else:
     # WORKSPACE TAB 2: LLM PROMPT TESTER
     # -------------------------------------------------------------
     elif active_tab == "🤖 LLM Prompt Tester":
-        st.subheader("🤖 Module 2: LLM Prompt Vulnerability & Red-Teaming Tester")
-        st.caption("Executes automated adversarial test suites aligned with OWASP Top 10 for LLMs to uncover injection, leakage, and jailbreak risks.")
+        col_th1, col_th2 = st.columns([3, 1])
+        with col_th1:
+            st.subheader("🤖 Module 2: LLM Prompt Vulnerability & Red-Teaming Tester")
+            st.caption("Executes automated adversarial test suites aligned with OWASP Top 10 for LLMs to uncover injection, leakage, and jailbreak risks.")
+        with col_th2:
+            if LLM_IMG_PATH.exists():
+                st.image(str(LLM_IMG_PATH), use_container_width=True)
         
         col_l1, col_l2 = st.columns([2, 1])
         
@@ -1295,8 +1396,13 @@ else:
     # WORKSPACE TAB 3: 1-CLICK PROMPT AUTO-HARDENER & DEFENSE STUDIO
     # -------------------------------------------------------------
     elif active_tab == "⚔️ Defense Studio":
-        st.subheader("🛡️ Module 3: 1-Click AI Prompt Auto-Hardener & Defense Studio")
-        st.caption("Remediation Engineering Studio: Configure defense layers, calculate protection score, generate protected directives, and test side-by-side.")
+        col_th1, col_th2 = st.columns([3, 1])
+        with col_th1:
+            st.subheader("🛡️ Module 3: 1-Click AI Prompt Auto-Hardener & Defense Studio")
+            st.caption("Remediation Engineering Studio: Configure defense layers, calculate protection score, generate protected directives, and test side-by-side.")
+        with col_th2:
+            if DEFENSE_IMG_PATH.exists():
+                st.image(str(DEFENSE_IMG_PATH), use_container_width=True)
         
         # Sub-mode selection
         studio_mode = st.radio(
@@ -1354,8 +1460,8 @@ else:
                 # Real-time score calculation
                 score_info = calculate_hardening_score(active_layers)
                 st.markdown(f"""
-                <div style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-top: 10px;">
-                    <div style="font-size: 0.85rem; color: #64748b; font-weight: 700;">HARDENING STRENGTH SCORE</div>
+                <div style="background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%); border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 14px; margin-top: 10px;">
+                    <div style="font-size: 0.85rem; color: #475569; font-weight: 700;">HARDENING STRENGTH SCORE</div>
                     <div style="font-size: 1.8rem; font-weight: 800; color: {score_info['color']};">{score_info['score']}%</div>
                     <div style="font-size: 0.9rem; font-weight: 700; color: {score_info['color']};">{score_info['level']}</div>
                 </div>
@@ -1515,8 +1621,13 @@ def format_user_query(untrusted_user_query: str) -> str:
     # WORKSPACE TAB 4: UNIFIED AUDIT & PDF REPORT
     # -------------------------------------------------------------
     elif active_tab == "📊 Unified Audit & PDF":
-        st.subheader("📊 Module 4: Unified Cybersecurity & AI Audit Report")
-        st.caption("Aggregates findings from both Network Deception and AI Prompt Vulnerability modules into an executive security report.")
+        col_th1, col_th2 = st.columns([3, 1])
+        with col_th1:
+            st.subheader("📊 Module 4: Unified Cybersecurity & AI Audit Report")
+            st.caption("Aggregates findings from both Network Deception and AI Prompt Vulnerability modules into an executive security report.")
+        with col_th2:
+            if REPORT_IMG_PATH.exists():
+                st.image(str(REPORT_IMG_PATH), use_container_width=True)
         
         matrix = compute_unified_risk_matrix(st.session_state.scan_history, st.session_state.llm_audit_history)
         
