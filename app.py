@@ -23,7 +23,7 @@ import plotly.graph_objects as go
 
 from config import (
     COMMON_PORTS, HONEYPOT_RISK_THRESHOLDS,
-    GEMINI_API_KEY, OPENAI_API_KEY, SHODAN_API_KEY, REPORTS_DIR
+    GEMINI_API_KEY, OPENROUTER_API_KEY, OPENAI_API_KEY, SHODAN_API_KEY, REPORTS_DIR
 )
 from modules.honeypot_detector.scanner import NetworkScanner, SIMULATION_PROFILES
 from modules.honeypot_detector.classifier import HoneypotClassifier
@@ -31,7 +31,7 @@ from modules.honeypot_detector.shodan_helper import ShodanHelper
 from modules.honeypot_detector.osint_helper import OSINTIntelligenceHelper, country_code_to_flag
 from modules.prompt_shield.runner import PromptShieldRunner
 from modules.prompt_shield.adapters import (
-    MockLLMAdapter, GeminiLLMAdapter, OpenAILLMAdapter, CustomEndpointAdapter
+    MockLLMAdapter, GeminiLLMAdapter, OpenAILLMAdapter, CustomEndpointAdapter, OpenRouterLLMAdapter
 )
 from modules.prompt_shield.hardening import (
     HARDENING_STRATEGIES, DEFAULT_VULNERABLE_PROMPTS, apply_hardening,
@@ -70,6 +70,10 @@ if "hardened_audit_history" not in st.session_state:
     st.session_state.hardened_audit_history = None
 if "gemini_key" not in st.session_state:
     st.session_state.gemini_key = GEMINI_API_KEY
+if "openrouter_key" not in st.session_state:
+    st.session_state.openrouter_key = OPENROUTER_API_KEY
+if "openrouter_model" not in st.session_state:
+    st.session_state.openrouter_model = "google/gemini-2.5-flash-lite"
 if "openai_key" not in st.session_state:
     st.session_state.openai_key = OPENAI_API_KEY
 if "shodan_key" not in st.session_state:
@@ -619,7 +623,12 @@ pdf_exporter = SecurityAuditPDF()
 # Helper to get selected LLM Adapter
 def get_selected_adapter():
     adapter_mode = st.session_state.get("adapter_mode", "Offline Simulator (Mock LLM)")
-    if adapter_mode == "Google Gemini API":
+    if adapter_mode == "OpenRouter API":
+        return OpenRouterLLMAdapter(
+            api_key=st.session_state.openrouter_key,
+            model_name=st.session_state.get("openrouter_model", "google/gemini-2.5-flash-lite")
+        )
+    elif "Gemini" in adapter_mode:
         return GeminiLLMAdapter(api_key=st.session_state.gemini_key)
     elif adapter_mode == "OpenAI GPT-4o-mini":
         return OpenAILLMAdapter(api_key=st.session_state.openai_key)
@@ -627,6 +636,7 @@ def get_selected_adapter():
         return CustomEndpointAdapter(endpoint_url=st.session_state.get("custom_url", "http://localhost:11434/api/generate"))
     else:
         return MockLLMAdapter()
+
 
 
 # Helper: Interactive Network Topology Radial Node Chart
@@ -1000,24 +1010,57 @@ else:
             
         st.divider()
         st.markdown("#### ⚙️ **AI Target Engine**")
+        adapter_options = [
+            "Offline Simulator (Mock LLM)",
+            "OpenRouter API",
+            "Google Gemini API (Google AI Studio)",
+            "OpenAI GPT-4o-mini",
+            "Custom Endpoint / Ollama"
+        ]
+        
+        current_idx = 0
+        if st.session_state.get("adapter_mode") in adapter_options:
+            current_idx = adapter_options.index(st.session_state.adapter_mode)
+            
         st.session_state.adapter_mode = st.selectbox(
             "Target Model Adapter:",
-            [
-                "Offline Simulator (Mock LLM)",
-                "Google Gemini API",
-                "OpenAI GPT-4o-mini",
-                "Custom Endpoint / Ollama"
-            ],
-            index=0,
-            help="Select the AI backend to test. The Offline Simulator requires no API keys and works 100% offline."
+            adapter_options,
+            index=current_idx,
+            help="Select the AI backend to test. OpenRouter supports all LLMs with your sk-or-v1 key."
         )
         
-        if st.session_state.adapter_mode == "Google Gemini API":
-            st.session_state.gemini_key = st.text_input("Gemini API Key:", value=st.session_state.gemini_key, type="password")
+        if st.session_state.adapter_mode == "OpenRouter API":
+            st.session_state.openrouter_key = st.text_input(
+                "OpenRouter API Key:",
+                value=st.session_state.get("openrouter_key", ""),
+                type="password",
+                help="Your key starting with sk-or-v1-..."
+            )
+            st.session_state.openrouter_model = st.text_input(
+                "OpenRouter Model Slug:",
+                value=st.session_state.get("openrouter_model", "google/gemini-2.5-flash-lite"),
+                help="e.g. google/gemini-2.5-flash-lite, meta-llama/llama-3.3-70b-instruct, openai/gpt-4o-mini"
+            )
+        elif "Gemini" in st.session_state.adapter_mode:
+            st.session_state.gemini_key = st.text_input(
+                "Gemini API Key (Google AI Studio):",
+                value=st.session_state.gemini_key,
+                type="password",
+                help="Get your free key starting with AIzaSy... from https://aistudio.google.com"
+            )
         elif st.session_state.adapter_mode == "OpenAI GPT-4o-mini":
-            st.session_state.openai_key = st.text_input("OpenAI API Key:", value=st.session_state.openai_key, type="password")
+            st.session_state.openai_key = st.text_input(
+                "OpenAI API Key:",
+                value=st.session_state.openai_key,
+                type="password",
+                help="Your key starting with sk-proj-..."
+            )
         elif st.session_state.adapter_mode == "Custom Endpoint / Ollama":
-            st.session_state.custom_url = st.text_input("Endpoint URL:", value="http://localhost:11434/api/generate")
+            st.session_state.custom_url = st.text_input(
+                "Endpoint URL:",
+                value=st.session_state.get("custom_url", "http://localhost:11434/api/generate")
+            )
+
             
         st.markdown("#### 🌐 **OSINT Intelligence**")
         st.session_state.shodan_key = st.text_input("Shodan API Key (Optional):", value=st.session_state.shodan_key, type="password")
@@ -1398,18 +1441,26 @@ else:
             
             with col_c1:
                 st.markdown("#### 📊 **Attack Outcomes Breakdown**")
+                pie_labels = ["Defended (Safe)", "Vulnerable (Breached)", "Suspicious"]
+                pie_counts = [llm_res['defended_count'], llm_res['vulnerable_count'], llm_res['suspicious_count']]
+                color_map = {
+                    "Defended (Safe)": "#10B981",
+                    "Vulnerable (Breached)": "#EF4444",
+                    "Suspicious": "#F59E0B",
+                    "API Error": "#64748B"
+                }
+                if llm_res.get('error_count', 0) > 0:
+                    pie_labels.append("API Error")
+                    pie_counts.append(llm_res['error_count'])
+                    
                 pie_data = pd.DataFrame({
-                    "Outcome": ["Defended (Safe)", "Vulnerable (Breached)", "Suspicious"],
-                    "Count": [llm_res['defended_count'], llm_res['vulnerable_count'], llm_res['suspicious_count']]
+                    "Outcome": pie_labels,
+                    "Count": pie_counts
                 })
                 fig_pie = px.pie(
                     pie_data, values="Count", names="Outcome",
                     color="Outcome",
-                    color_discrete_map={
-                        "Defended (Safe)": "#10B981",
-                        "Vulnerable (Breached)": "#EF4444",
-                        "Suspicious": "#F59E0B"
-                    },
+                    color_discrete_map=color_map,
                     hole=0.45
                 )
                 fig_pie.update_layout(paper_bgcolor='rgba(0,0,0,0)', height=260, margin=dict(l=10, r=10, t=10, b=10), font={'color': '#0f172a'})
@@ -1417,6 +1468,8 @@ else:
                 
             with col_c2:
                 st.markdown("#### 🛡️ **Hardening & Mitigation Advice**")
+                if llm_res.get('error_count', 0) == llm_res['total_tests']:
+                    st.warning("⚠️ **API Authentication Error**: All requests failed at the remote provider. Please verify your API Key in the left sidebar or select **'OpenRouter API'** / **'Offline Simulator'**.")
                 for rec in llm_res["recommendations"]:
                     st.success(f"💡 {rec}")
                     
@@ -1428,6 +1481,8 @@ else:
                     badge_prefix = "🚨 VULNERABLE"
                 elif verdict_str == "DEFENDED":
                     badge_prefix = "🛡️ DEFENDED"
+                elif verdict_str == "ERROR":
+                    badge_prefix = "⚠️ API ERROR"
                 else:
                     badge_prefix = "⚠️ SUSPICIOUS"
                 

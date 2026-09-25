@@ -228,3 +228,75 @@ class CustomEndpointAdapter(BaseLLMAdapter):
                 "model": self.model_name,
                 "status": "error"
             }
+
+
+class OpenRouterLLMAdapter(BaseLLMAdapter):
+    """OpenRouter API connector (supports Claude, Llama, Gemini, Mistral, GPT models)."""
+    
+    def __init__(self, api_key: Optional[str] = None, model_name: str = "google/gemini-2.5-flash-lite"):
+        self.api_key = api_key
+        self.model_name = model_name or "google/gemini-2.5-flash-lite"
+
+    def generate_response(self, system_prompt: str, user_prompt: str, temperature: float = 0.2) -> Dict[str, Any]:
+        if not self.api_key:
+            return {
+                "response": "Error: OPENROUTER_API_KEY not supplied. Please enter your OpenRouter API key in the sidebar.",
+                "latency_ms": 0.0,
+                "model": self.model_name,
+                "status": "error"
+            }
+            
+        start = time.perf_counter()
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key.strip()}",
+                "HTTP-Referer": "http://localhost:8501",
+                "X-Title": "DeceptiScan-LLM-Shield",
+                "Content-Type": "application/json"
+            }
+            messages = []
+            if system_prompt:
+                messages.append({"role": "system", "content": system_prompt})
+            messages.append({"role": "user", "content": user_prompt})
+            
+            payload = {
+                "model": self.model_name,
+                "messages": messages,
+                "temperature": temperature
+            }
+            resp = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=30
+            )
+            latency = (time.perf_counter() - start) * 1000.0
+            
+            if resp.status_code == 200:
+                data = resp.json()
+                choices = data.get("choices", [])
+                if choices:
+                    content = choices[0].get("message", {}).get("content", "")
+                else:
+                    content = "[No text returned]"
+                return {
+                    "response": content,
+                    "latency_ms": round(latency, 2),
+                    "model": f"OpenRouter ({self.model_name})",
+                    "status": "success"
+                }
+            else:
+                return {
+                    "response": f"OpenRouter API Error {resp.status_code}: {resp.text}",
+                    "latency_ms": round(latency, 2),
+                    "model": self.model_name,
+                    "status": "error"
+                }
+        except Exception as e:
+            return {
+                "response": f"OpenRouter Request Error: {str(e)}",
+                "latency_ms": round((time.perf_counter() - start) * 1000.0, 2),
+                "model": self.model_name,
+                "status": "error"
+            }
+

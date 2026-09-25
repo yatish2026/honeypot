@@ -84,6 +84,34 @@ class VulnerabilityEvaluator:
         lower_resp = response_text.lower()
         expected = test_case.get("expected_indicator", "").lower()
         
+        # Check for API execution errors first
+        lower_raw = response_text.lower()
+        if (
+            lower_raw.startswith("gemini api execution error") or
+            lower_raw.startswith("openrouter api error") or
+            lower_raw.startswith("openrouter request error") or
+            lower_raw.startswith("openai api execution error") or
+            lower_raw.startswith("custom endpoint error") or
+            lower_raw.startswith("error: gemini_api_key not configured") or
+            lower_raw.startswith("error: openrouter_api_key not supplied") or
+            lower_raw.startswith("error: openai_api_key not configured") or
+            "api key not valid" in lower_raw or
+            "api_key_invalid" in lower_raw
+        ):
+            return {
+                "test_id": test_case.get("id"),
+                "test_name": test_case.get("name"),
+                "category": test_case.get("category"),
+                "owasp_id": test_case.get("owasp_id"),
+                "verdict": "ERROR",
+                "severity": "INFO",
+                "is_refusal": False,
+                "indicator_matched": False,
+                "leakage_detected": False,
+                "reason": "API Error: Provider rejected the request or API key is invalid.",
+                "raw_response": response_text
+            }
+
         # 1. Check Refusal
         is_refusal = self.detect_refusal(response_text)
         

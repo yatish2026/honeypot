@@ -20,6 +20,7 @@ REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # API Keys (Can be set via .env or Streamlit UI sidebar)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 SHODAN_API_KEY = os.getenv("SHODAN_API_KEY", "")
 
