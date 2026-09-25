@@ -85,10 +85,12 @@ hide_sidebar_css = """
     }
 """ if st.session_state.app_mode == "landing" else ""
 
+if hide_sidebar_css:
+    st.markdown(f"<style>{hide_sidebar_css}</style>", unsafe_allow_html=True)
+
 # Sophisticated Cool-Tinted Light Theme (Frost Slate, Ambient Mesh, Crisp Contrast, Zero Stark White & Zero Dark)
-st.markdown(f"""
+st.markdown("""
 <style>
-    {hide_sidebar_css}
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
     
     html, body, .stApp {
@@ -164,13 +166,13 @@ st.markdown(f"""
         margin-bottom: 6px !important;
     }
     
-    [data-testid="stCaptionContainer"], .stCaption, small {{
+    [data-testid="stCaptionContainer"], .stCaption, small {
         font-size: 1.02rem !important;
         color: #475569 !important;
         font-weight: 600 !important;
         line-height: 1.6 !important;
         margin-bottom: 12px !important;
-    }}
+    }
 
     /* =========================================================================
        2. TACTILE ENTERPRISE BUTTONS (COOL PALETTE, LUMINOUS GRADIENTS)
@@ -184,7 +186,7 @@ st.markdown(f"""
     [data-testid="stDownloadButton"] > button,
     button[kind="secondary"],
     button[kind="primary"],
-    button[kind="header"] {{
+    button[kind="header"] {
         border-radius: 12px !important;
         font-weight: 700 !important;
         font-size: 1.03rem !important;
@@ -195,101 +197,101 @@ st.markdown(f"""
         align-items: center !important;
         justify-content: center !important;
         cursor: pointer !important;
-    }}
+    }
 
     /* Primary Action Buttons */
     [data-testid="baseButton-primary"], 
     [data-testid="stBaseButton-primary"],
     button[kind="primary"], 
     .stButton > button[kind="primary"],
-    [data-testid="stDownloadButton"] > button {{
+    [data-testid="stDownloadButton"] > button {
         background: linear-gradient(135deg, #4338ca 0%, #2563eb 50%, #0284c7 100%) !important;
         color: #ffffff !important;
         border: none !important;
         box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35) !important;
-    }}
+    }
     
     [data-testid="baseButton-primary"] *, 
     [data-testid="stBaseButton-primary"] *,
     button[kind="primary"] *, 
     .stButton > button[kind="primary"] *,
-    [data-testid="stDownloadButton"] > button * {{
+    [data-testid="stDownloadButton"] > button * {
         color: #ffffff !important;
         font-weight: 700 !important;
         font-size: 1.03rem !important;
-    }}
+    }
     
     [data-testid="baseButton-primary"]:hover, 
     [data-testid="stBaseButton-primary"]:hover,
     button[kind="primary"]:hover,
     .stButton > button[kind="primary"]:hover,
-    [data-testid="stDownloadButton"] > button:hover {{
+    [data-testid="stDownloadButton"] > button:hover {
         transform: translateY(-2px) !important;
         box-shadow: 0 8px 24px rgba(37, 99, 235, 0.5) !important;
         background: linear-gradient(135deg, #3730a3 0%, #1d4ed8 50%, #0369a1 100%) !important;
-    }}
+    }
 
     /* Secondary Action Buttons */
     [data-testid="baseButton-secondary"], 
     [data-testid="stBaseButton-secondary"],
     button[kind="secondary"],
-    .stButton > button {{
+    .stButton > button {
         background: #e2e8f0 !important;
         background-color: #e2e8f0 !important;
         color: #0f172a !important;
         border: 1.5px solid #cbd5e1 !important;
         box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
-    }}
+    }
     
     [data-testid="baseButton-secondary"] *, 
     [data-testid="stBaseButton-secondary"] *,
     button[kind="secondary"] *,
-    .stButton > button * {{
+    .stButton > button * {
         color: #0f172a !important;
         font-weight: 700 !important;
         font-size: 1.02rem !important;
-    }}
+    }
     
     [data-testid="baseButton-secondary"]:hover, 
     [data-testid="stBaseButton-secondary"]:hover,
     button[kind="secondary"]:hover,
-    .stButton > button:hover {{
+    .stButton > button:hover {
         background: #dbeafe !important;
         background-color: #dbeafe !important;
         border-color: #3b82f6 !important;
         color: #1d4ed8 !important;
         box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18) !important;
         transform: translateY(-2px) !important;
-    }}
+    }
 
     /* =========================================================================
        3. WORKSPACE RADIO & TAB NAVIGATION
        ========================================================================= */
-    div[data-testid="stRadio"] {{
+    div[data-testid="stRadio"] {
         background: #e2e8f0 !important;
         padding: 14px 18px !important;
         border-radius: 16px !important;
         border: 1.5px solid #cbd5e1 !important;
         box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03) !important;
         margin-bottom: 22px !important;
-    }}
+    }
     
-    div[data-testid="stRadio"] > label {{
+    div[data-testid="stRadio"] > label {
         color: #0f172a !important;
         font-size: 1.12rem !important;
         font-weight: 800 !important;
         margin-bottom: 10px !important;
         display: block !important;
         letter-spacing: 0.4px !important;
-    }}
+    }
     
-    div[data-testid="stRadio"] div[role="radiogroup"] {{
+    div[data-testid="stRadio"] div[role="radiogroup"] {
         display: flex !important;
         flex-wrap: wrap !important;
         gap: 10px !important;
-    }}
+    }
     
-    div[data-testid="stRadio"] div[role="radiogroup"] label {{
+    div[data-testid="stRadio"] div[role="radiogroup"] label {
         background: #f1f5f9 !important;
         border: 1.5px solid #cbd5e1 !important;
         border-radius: 12px !important;
@@ -300,53 +302,53 @@ st.markdown(f"""
         display: flex !important;
         align-items: center !important;
         box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03) !important;
-    }}
+    }
     
-    div[data-testid="stRadio"] div[role="radiogroup"] label:hover {{
+    div[data-testid="stRadio"] div[role="radiogroup"] label:hover {
         border-color: #3b82f6 !important;
         background: #e2e8f0 !important;
-    }}
+    }
     
     div[data-testid="stRadio"] div[role="radiogroup"] label p, 
     div[data-testid="stRadio"] div[role="radiogroup"] label span, 
-    div[data-testid="stRadio"] div[role="radiogroup"] label div {{
+    div[data-testid="stRadio"] div[role="radiogroup"] label div {
         color: #0f172a !important;
         font-size: 1.08rem !important;
         font-weight: 700 !important;
         letter-spacing: 0.2px !important;
-    }}
+    }
     
     div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"],
-    div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) {{
+    div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) {
         background: rgba(59, 130, 246, 0.16) !important;
         border: 2px solid #2563eb !important;
         box-shadow: 0 0 16px rgba(37, 99, 235, 0.25) !important;
-    }}
+    }
     
     div[data-testid="stRadio"] div[role="radiogroup"] label[data-checked="true"] p,
-    div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) p {{
+    div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) p {
         color: #1d4ed8 !important;
         font-weight: 800 !important;
-    }}
+    }
 
     /* Form Inputs, Selectboxes, and Textareas */
     div[data-baseweb="input"], 
     div[data-baseweb="select"] > div, 
-    div[data-baseweb="textarea"] {{
+    div[data-baseweb="textarea"] {
         background-color: #f1f5f9 !important;
         border: 1.5px solid #cbd5e1 !important;
         border-radius: 12px !important;
         color: #0f172a !important;
-    }}
+    }
     div[data-baseweb="input"]:focus-within, 
     div[data-baseweb="select"] > div:focus-within, 
-    div[data-baseweb="textarea"]:focus-within {{
+    div[data-baseweb="textarea"]:focus-within {
         border-color: #3b82f6 !important;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
-    }}
-    input, textarea {{
+    }
+    input, textarea {
         color: #0f172a !important;
-    }}
+    }
 
     /* Expander styling with clean icon alignment and hover */
     [data-testid="stExpander"] {
@@ -383,7 +385,7 @@ st.markdown(f"""
     /* =========================================================================
        4. CARDS & HERO CONTAINERS (FROSTED SLATE WITH NO STARK WHITE)
        ========================================================================= */
-    .hero-box {{
+    .hero-box {
         background: linear-gradient(135deg, rgba(241, 245, 249, 0.96) 0%, rgba(226, 232, 240, 0.94) 100%);
         border: 1.5px solid #cbd5e1;
         border-radius: 24px;
@@ -392,9 +394,9 @@ st.markdown(f"""
         box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.08), 0 0 25px rgba(59, 130, 246, 0.06);
         position: relative;
         backdrop-filter: blur(12px);
-    }}
+    }
     
-    .hero-eyebrow {{
+    .hero-eyebrow {
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -408,62 +410,62 @@ st.markdown(f"""
         letter-spacing: 0.8px;
         text-transform: uppercase;
         margin-bottom: 16px;
-    }}
+    }
     
-    .hero-heading {{
+    .hero-heading {
         font-size: 3.1rem;
         font-weight: 800;
         line-height: 1.18;
         letter-spacing: -1.2px;
         color: #0f172a;
         margin-bottom: 16px;
-    }}
+    }
     
-    .brand-gradient-text {{
+    .brand-gradient-text {
         background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #0284c7 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-    }}
+    }
     
-    .hero-desc {{
+    .hero-desc {
         font-size: 1.18rem;
         color: #334155;
         max-width: 860px;
         line-height: 1.7;
         margin-bottom: 24px;
-    }}
+    }
     
-    .stats-bar {{
+    .stats-bar {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 14px;
         margin-top: 24px;
-    }}
+    }
     
-    .stat-card {{
+    .stat-card {
         background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
         border: 1.5px solid #cbd5e1;
         border-radius: 14px;
         padding: 16px 20px;
         box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
-    }}
+    }
     
-    .stat-val {{
+    .stat-val {
         font-size: 2.1rem;
         font-weight: 800;
         color: #2563eb;
         font-family: 'JetBrains Mono', monospace;
-    }}
+    }
     
-    .stat-lbl {{
+    .stat-lbl {
         font-size: 0.88rem;
         color: #475569;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.6px;
-    }}
+    }
     
-    .module-card-box {{
+    .module-card-box {
         background: linear-gradient(180deg, rgba(241, 245, 249, 0.96) 0%, rgba(226, 232, 240, 0.88) 100%);
         border: 1.5px solid #cbd5e1;
         border-radius: 20px;
@@ -475,30 +477,30 @@ st.markdown(f"""
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
         overflow: hidden;
-    }}
+    }
     
-    .module-card-box:hover {{
+    .module-card-box:hover {
         border-color: #3b82f6;
         transform: translateY(-4px);
         box-shadow: 0 16px 32px -6px rgba(37, 99, 235, 0.2);
-    }}
+    }
     
-    .module-title {{
+    .module-title {
         font-size: 1.4rem;
         font-weight: 800;
         color: #0f172a;
         margin-top: 12px;
         margin-bottom: 8px;
-    }}
+    }
     
-    .module-desc {{
+    .module-desc {
         font-size: 1.02rem;
         color: #334155;
         line-height: 1.6;
         margin-bottom: 16px;
-    }}
+    }
     
-    .tag-pill {{
+    .tag-pill {
         display: inline-block;
         padding: 5px 12px;
         border-radius: 6px;
@@ -509,34 +511,34 @@ st.markdown(f"""
         margin-right: 6px;
         margin-bottom: 6px;
         border: 1px solid #cbd5e1;
-    }}
+    }
     
-    .pipeline-step {{
+    .pipeline-step {
         background: linear-gradient(180deg, rgba(241, 245, 249, 0.96) 0%, rgba(226, 232, 240, 0.88) 100%);
         border: 1.5px solid #cbd5e1;
         border-radius: 16px;
         padding: 24px;
         box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
         height: 100%;
-    }}
+    }
     
-    .step-num {{
+    .step-num {
         font-size: 0.92rem;
         font-weight: 800;
         color: #2563eb;
         font-family: 'JetBrains Mono', monospace;
         letter-spacing: 1px;
         margin-bottom: 6px;
-    }}
+    }
     
-    .step-name {{
+    .step-name {
         font-size: 1.3rem;
         font-weight: 800;
         color: #0f172a;
         margin-bottom: 10px;
-    }}
+    }
     
-    .badge-cyber-emerald {{
+    .badge-cyber-emerald {
         background: rgba(16, 185, 129, 0.16);
         color: #047857;
         border: 1.5px solid rgba(16, 185, 129, 0.45);
@@ -544,9 +546,9 @@ st.markdown(f"""
         border-radius: 8px;
         font-size: 0.9rem;
         font-weight: 800;
-    }}
+    }
     
-    .badge-cyber-coral {{
+    .badge-cyber-coral {
         background: rgba(239, 68, 68, 0.16);
         color: #b91c1c;
         border: 1.5px solid rgba(239, 68, 68, 0.45);
@@ -554,56 +556,56 @@ st.markdown(f"""
         border-radius: 8px;
         font-size: 0.9rem;
         font-weight: 800;
-    }}
+    }
     
-    .cyber-card {{
+    .cyber-card {
         background: linear-gradient(180deg, rgba(241, 245, 249, 0.96) 0%, rgba(226, 232, 240, 0.85) 100%);
         border: 1.5px solid #cbd5e1;
         border-radius: 16px;
         padding: 22px;
         margin-bottom: 18px;
         box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-    }}
+    }
     
-    .cyber-card-danger {{
+    .cyber-card-danger {
         border-left: 5px solid #dc2626 !important;
-    }}
+    }
     
-    .cyber-card-success {{
+    .cyber-card-success {
         border-left: 5px solid #059669 !important;
-    }}
+    }
     
-    .metric-value {{
+    .metric-value {
         font-size: 2.3rem;
         font-weight: 800;
         letter-spacing: -0.5px;
         color: #0f172a;
-    }}
+    }
     
-    .osint-card {{
+    .osint-card {
         background: linear-gradient(135deg, rgba(241, 245, 249, 0.98) 0%, rgba(226, 232, 240, 0.92) 100%);
         border: 1.5px solid #94a3b8;
         border-radius: 18px;
         padding: 22px 26px;
         margin-bottom: 24px;
         box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
-    }}
+    }
 
-    .tab-header-card {{
+    .tab-header-card {
         background: linear-gradient(135deg, rgba(241, 245, 249, 0.98) 0%, rgba(226, 232, 240, 0.9) 100%);
         border: 1.5px solid #cbd5e1;
         border-radius: 18px;
         padding: 20px 24px;
         margin-bottom: 24px;
         box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
-    }}
+    }
 
     /* Rounded image styling */
-    [data-testid="stImage"] img {{
+    [data-testid="stImage"] img {
         border-radius: 14px !important;
         border: 1.5px solid #cbd5e1 !important;
         box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06) !important;
-    }}
+    }
 </style>
 """, unsafe_allow_html=True)
 
