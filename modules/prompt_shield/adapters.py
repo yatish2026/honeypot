@@ -355,9 +355,9 @@ class OpenRouterLLMAdapter(BaseLLMAdapter):
 class GroqLLMAdapter(BaseLLMAdapter):
     """Groq Cloud API connector (Ultra-fast & 100% Free with gsk_... keys)."""
     
-    def __init__(self, api_key: Optional[str] = None, model_name: str = "llama-3.3-70b-versatile"):
+    def __init__(self, api_key: Optional[str] = None, model_name: str = "llama-3.1-8b-instant"):
         self.api_key = api_key or GROQ_API_KEY
-        self.model_name = model_name or "llama-3.3-70b-versatile"
+        self.model_name = model_name or "llama-3.1-8b-instant"
         self._discovered_model = None
 
     def generate_response(self, system_prompt: str, user_prompt: str, temperature: float = 0.2) -> Dict[str, Any]:
@@ -380,20 +380,18 @@ class GroqLLMAdapter(BaseLLMAdapter):
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": user_prompt})
         
-        # Primary and candidate fallback models
+        # Primary and candidate fallback models (active 2026 Groq catalog)
         models_to_try = [
             self._discovered_model if self._discovered_model else None,
             self.model_name,
-            "llama-3.3-70b-versatile",
             "llama-3.1-8b-instant",
-            "llama-3.2-11b-vision-preview",
-            "llama-3.2-3b-preview",
-            "llama-3.2-1b-preview",
+            "llama-3.3-70b-versatile",
             "gemma2-9b-it",
             "mixtral-8x7b-32768",
-            "qwen/qwen3.6-27b",
+            "openai/gpt-oss-20b",
             "openai/gpt-oss-120b",
-            "openai/gpt-oss-20b"
+            "qwen/qwen3.6-27b",
+            "deepseek-r1-distill-llama-70b"
         ]
         # Deduplicate while preserving order, remove None
         models_to_try = [m for i, m in enumerate(models_to_try) if m and m not in models_to_try[:i]]
@@ -425,29 +423,47 @@ class GroqLLMAdapter(BaseLLMAdapter):
                         "model": f"Groq ({m})",
                         "status": "success"
                     }
-                elif resp.status_code == 404:
-                    last_error = f"Model `{m}` not found on your Groq tier."
-                    # If 404, try dynamically querying active models on Groq
+                else:
+                    resp_json = {}
                     try:
-                        m_list_resp = requests.get("https://api.groq.com/openai/v1/models", headers=headers, timeout=10)
-                        if m_list_resp.status_code == 200:
-                            available_models = [
-                                x["id"] for x in m_list_resp.json().get("data", [])
-                                if not any(k in x["id"].lower() for k in ["whisper", "guard", "audio", "embed"])
-                            ]
-                            for av_m in available_models:
-                                if av_m not in models_to_try:
-                                    models_to_try.append(av_m)
+                        resp_json = resp.json()
                     except Exception:
                         pass
-                    continue
-                else:
-                    return {
-                        "response": f"Groq API Error {resp.status_code}: {resp.text}",
-                        "latency_ms": round(latency, 2),
-                        "model": m,
-                        "status": "error"
-                    }
+                    
+                    err_msg = resp_json.get("error", {}).get("message", resp.text)
+                    is_model_issue = (
+                        resp.status_code in [400, 404] and (
+                            "decommissioned" in err_msg.lower() or
+                            "not exist" in err_msg.lower() or
+                            "not found" in err_msg.lower() or
+                            "access" in err_msg.lower() or
+                            "model" in err_msg.lower()
+                        )
+                    )
+                    
+                    if is_model_issue:
+                        last_error = f"Model `{m}` unavailable: {err_msg}"
+                        # Dynamically query active models on Groq for this key
+                        try:
+                            m_list_resp = requests.get("https://api.groq.com/openai/v1/models", headers=headers, timeout=10)
+                            if m_list_resp.status_code == 200:
+                                available_models = [
+                                    x["id"] for x in m_list_resp.json().get("data", [])
+                                    if not any(k in x["id"].lower() for k in ["whisper", "guard", "audio", "embed"])
+                                ]
+                                for av_m in available_models:
+                                    if av_m not in models_to_try:
+                                        models_to_try.append(av_m)
+                        except Exception:
+                            pass
+                        continue
+                    else:
+                        return {
+                            "response": f"Groq API Error {resp.status_code}: {err_msg}",
+                            "latency_ms": round(latency, 2),
+                            "model": m,
+                            "status": "error"
+                        }
             except Exception as e:
                 last_error = str(e)
                 continue

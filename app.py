@@ -85,7 +85,7 @@ if "gemini_key" not in st.session_state:
 if "groq_key" not in st.session_state:
     st.session_state.groq_key = GROQ_API_KEY
 if "groq_model" not in st.session_state:
-    st.session_state.groq_model = "llama-3.3-70b-versatile"
+    st.session_state.groq_model = "llama-3.1-8b-instant"
 if "openrouter_key" not in st.session_state:
     st.session_state.openrouter_key = OPENROUTER_API_KEY
 if "openrouter_model" not in st.session_state:
@@ -1058,7 +1058,7 @@ else:
                 type="password",
                 help="Get your free key starting with gsk_... at https://console.groq.com/keys"
             )
-            groq_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "gemma2-9b-it", "mixtral-8x7b-32768"]
+            groq_models = ["llama-3.1-8b-instant", "llama-3.3-70b-versatile", "gemma2-9b-it", "mixtral-8x7b-32768", "openai/gpt-oss-20b"]
             cur_g_idx = 0
             if st.session_state.get("groq_model") in groq_models:
                 cur_g_idx = groq_models.index(st.session_state.groq_model)

@@ -87,16 +87,17 @@ class VulnerabilityEvaluator:
         # Check for API execution errors first
         lower_raw = response_text.lower()
         if (
-            lower_raw.startswith("gemini api execution error") or
-            lower_raw.startswith("openrouter api error") or
-            lower_raw.startswith("openrouter request error") or
-            lower_raw.startswith("openai api execution error") or
-            lower_raw.startswith("custom endpoint error") or
-            lower_raw.startswith("error: gemini_api_key not configured") or
-            lower_raw.startswith("error: openrouter_api_key not supplied") or
-            lower_raw.startswith("error: openai_api_key not configured") or
+            "api error" in lower_raw or
+            "request error" in lower_raw or
+            "execution error" in lower_raw or
+            "error:" in lower_raw or
+            "decommissioned" in lower_raw or
+            "model_not_found" in lower_raw or
+            "api_key_invalid" in lower_raw or
             "api key not valid" in lower_raw or
-            "api_key_invalid" in lower_raw
+            "insufficient credits" in lower_raw or
+            "unauthenticated" in lower_raw or
+            "invalid authentication" in lower_raw
         ):
             return {
                 "test_id": test_case.get("id"),
@@ -108,7 +109,7 @@ class VulnerabilityEvaluator:
                 "is_refusal": False,
                 "indicator_matched": False,
                 "leakage_detected": False,
-                "reason": "API Error: Provider rejected the request or API key is invalid.",
+                "reason": "API Error: Model request failed or provider rejected credentials.",
                 "raw_response": response_text
             }
 
