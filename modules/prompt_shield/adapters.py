@@ -9,6 +9,7 @@ import requests
 import config
 
 GEMINI_API_KEY = getattr(config, "GEMINI_API_KEY", "")
+GROQ_API_KEY = getattr(config, "GROQ_API_KEY", "")
 OPENAI_API_KEY = getattr(config, "OPENAI_API_KEY", "")
 OPENROUTER_API_KEY = getattr(config, "OPENROUTER_API_KEY", "")
 
@@ -95,7 +96,7 @@ class MockLLMAdapter(BaseLLMAdapter):
 
 
 class GeminiLLMAdapter(BaseLLMAdapter):
-    """Google Gemini API connector (e.g. gemini-1.5-flash, gemini-2.0-flash)."""
+    """Google Gemini API connector with multi-model fallback & intelligent key validation."""
     
     def __init__(self, api_key: Optional[str] = None, model_name: str = "gemini-1.5-flash"):
         self.api_key = api_key or GEMINI_API_KEY
@@ -104,42 +105,70 @@ class GeminiLLMAdapter(BaseLLMAdapter):
     def generate_response(self, system_prompt: str, user_prompt: str, temperature: float = 0.2) -> Dict[str, Any]:
         if not self.api_key:
             return {
-                "response": "Error: GEMINI_API_KEY not configured. Please supply an API key in the sidebar.",
+                "response": "Error: GEMINI_API_KEY not configured. Please supply a valid Google AI Studio API key in the sidebar.",
+                "latency_ms": 0.0,
+                "model": self.model_name,
+                "status": "error"
+            }
+            
+        clean_key = self.api_key.strip()
+        if not clean_key.startswith("AIzaSy"):
+            return {
+                "response": (
+                    "Gemini API Execution Error: Invalid API Key format. Google AI Studio keys must start with 'AIzaSy...'.\n\n"
+                    "Note: If your key starts with 'AQ...' or 'sk-...', that is NOT a Google AI Studio key (it may be a Google Cloud OAuth token or OpenRouter key).\n"
+                    "👉 Get your free Google AI Studio key here: https://aistudio.google.com/app/apikey"
+                ),
                 "latency_ms": 0.0,
                 "model": self.model_name,
                 "status": "error"
             }
             
         start = time.perf_counter()
-        try:
-            import google.generativeai as genai
-            genai.configure(api_key=self.api_key)
-            
-            # Combine system prompt with user input if model supports system_instruction
-            model = genai.GenerativeModel(
-                model_name=self.model_name,
-                system_instruction=system_prompt if system_prompt else None
-            )
-            
-            response = model.generate_content(
-                user_prompt,
-                generation_config=genai.types.GenerationConfig(temperature=temperature)
-            )
-            
-            latency = (time.perf_counter() - start) * 1000.0
-            return {
-                "response": response.text if response.text else "[EMPTY RESPONSE / BLOCKED BY SAFETY]",
-                "latency_ms": round(latency, 2),
-                "model": self.model_name,
-                "status": "success"
-            }
-        except Exception as e:
-            return {
-                "response": f"Gemini API Execution Error: {str(e)}",
-                "latency_ms": round((time.perf_counter() - start) * 1000.0, 2),
-                "model": self.model_name,
-                "status": "error"
-            }
+        
+        # Candidate model names to try in order
+        candidate_models = [self.model_name, "gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-pro"]
+        # Remove duplicates preserving order
+        candidate_models = list(dict.fromkeys(candidate_models))
+        
+        last_error = ""
+        for m_name in candidate_models:
+            try:
+                import google.generativeai as genai
+                genai.configure(api_key=clean_key)
+                
+                model = genai.GenerativeModel(
+                    model_name=m_name,
+                    system_instruction=system_prompt if system_prompt else None
+                )
+                
+                response = model.generate_content(
+                    user_prompt,
+                    generation_config=genai.types.GenerationConfig(temperature=temperature)
+                )
+                
+                latency = (time.perf_counter() - start) * 1000.0
+                resp_text = response.text if hasattr(response, 'text') and response.text else "[EMPTY RESPONSE / BLOCKED BY SAFETY]"
+                return {
+                    "response": resp_text,
+                    "latency_ms": round(latency, 2),
+                    "model": f"Gemini ({m_name})",
+                    "status": "success"
+                }
+            except Exception as e:
+                last_error = str(e)
+                # If 404, try next candidate model
+                if "404" in last_error or "not found" in last_error.lower():
+                    continue
+                else:
+                    break
+                    
+        return {
+            "response": f"Gemini API Execution Error: {last_error}",
+            "latency_ms": round((time.perf_counter() - start) * 1000.0, 2),
+            "model": self.model_name,
+            "status": "error"
+        }
 
 
 class OpenAILLMAdapter(BaseLLMAdapter):
@@ -239,7 +268,12 @@ class OpenRouterLLMAdapter(BaseLLMAdapter):
     
     def __init__(self, api_key: Optional[str] = None, model_name: str = "google/gemini-2.5-flash-lite"):
         self.api_key = api_key or OPENROUTER_API_KEY
-        self.model_name = model_name or "google/gemini-2.5-flash-lite"
+        clean_model = (model_name or "google/gemini-2.5-flash-lite").strip()
+        # Sanitize whitespace into dashes if user wrote e.g. "google/gemini 2.5 flash lite"
+        if " " in clean_model and "/" in clean_model:
+            parts = clean_model.split("/", 1)
+            clean_model = f"{parts[0]}/{parts[1].replace(' ', '-')}"
+        self.model_name = clean_model
 
     def generate_response(self, system_prompt: str, user_prompt: str, temperature: float = 0.2) -> Dict[str, Any]:
         if not self.api_key:
@@ -289,6 +323,19 @@ class OpenRouterLLMAdapter(BaseLLMAdapter):
                     "model": f"OpenRouter ({self.model_name})",
                     "status": "success"
                 }
+            elif resp.status_code == 402:
+                return {
+                    "response": (
+                        "OpenRouter API Error 402 (Insufficient Credits): This OpenRouter account has 0 credits.\n\n"
+                        "💡 Tips:\n"
+                        "1. Purchase credits at https://openrouter.ai/settings/credits, OR\n"
+                        "2. Switch to 'Groq Cloud API (Free)' in the sidebar for 100% free high-speed testing (https://console.groq.com), OR\n"
+                        "3. Use 'Google Gemini API' with a key starting with 'AIzaSy...' from https://aistudio.google.com/app/apikey"
+                    ),
+                    "latency_ms": round(latency, 2),
+                    "model": self.model_name,
+                    "status": "error"
+                }
             else:
                 return {
                     "response": f"OpenRouter API Error {resp.status_code}: {resp.text}",
@@ -299,6 +346,72 @@ class OpenRouterLLMAdapter(BaseLLMAdapter):
         except Exception as e:
             return {
                 "response": f"OpenRouter Request Error: {str(e)}",
+                "latency_ms": round((time.perf_counter() - start) * 1000.0, 2),
+                "model": self.model_name,
+                "status": "error"
+            }
+
+
+class GroqLLMAdapter(BaseLLMAdapter):
+    """Groq Cloud API connector (Ultra-fast & 100% Free with gsk_... keys)."""
+    
+    def __init__(self, api_key: Optional[str] = None, model_name: str = "llama-3.3-70b-versatile"):
+        self.api_key = api_key or GROQ_API_KEY
+        self.model_name = model_name or "llama-3.3-70b-versatile"
+
+    def generate_response(self, system_prompt: str, user_prompt: str, temperature: float = 0.2) -> Dict[str, Any]:
+        if not self.api_key:
+            return {
+                "response": "Error: GROQ_API_KEY not supplied. Please enter your free Groq API key (starts with gsk_...) in the sidebar.",
+                "latency_ms": 0.0,
+                "model": self.model_name,
+                "status": "error"
+            }
+            
+        start = time.perf_counter()
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key.strip()}",
+                "Content-Type": "application/json"
+            }
+            messages = []
+            if system_prompt:
+                messages.append({"role": "system", "content": system_prompt})
+            messages.append({"role": "user", "content": user_prompt})
+            
+            payload = {
+                "model": self.model_name,
+                "messages": messages,
+                "temperature": temperature
+            }
+            resp = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=30
+            )
+            latency = (time.perf_counter() - start) * 1000.0
+            
+            if resp.status_code == 200:
+                data = resp.json()
+                choices = data.get("choices", [])
+                content = choices[0].get("message", {}).get("content", "") if choices else "[EMPTY RESPONSE]"
+                return {
+                    "response": content,
+                    "latency_ms": round(latency, 2),
+                    "model": f"Groq ({self.model_name})",
+                    "status": "success"
+                }
+            else:
+                return {
+                    "response": f"Groq API Error {resp.status_code}: {resp.text}",
+                    "latency_ms": round(latency, 2),
+                    "model": self.model_name,
+                    "status": "error"
+                }
+        except Exception as e:
+            return {
+                "response": f"Groq Request Error: {str(e)}",
                 "latency_ms": round((time.perf_counter() - start) * 1000.0, 2),
                 "model": self.model_name,
                 "status": "error"

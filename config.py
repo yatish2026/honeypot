@@ -28,6 +28,7 @@ for d in [MODELS_DIR, PAYLOADS_DIR, REPORTS_DIR]:
 
 # API Keys (Can be set via .env or Streamlit UI sidebar)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 SHODAN_API_KEY = os.getenv("SHODAN_API_KEY", "")

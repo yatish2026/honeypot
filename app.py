@@ -32,6 +32,7 @@ importlib.reload(config)
 COMMON_PORTS = getattr(config, "COMMON_PORTS", [21, 22, 23, 25, 53, 80, 110, 143, 443, 502, 1433, 2222, 3306, 5000, 8080, 8443, 8888])
 HONEYPOT_RISK_THRESHOLDS = getattr(config, "HONEYPOT_RISK_THRESHOLDS", {"CRITICAL": 0.80, "HIGH": 0.60, "MEDIUM": 0.35, "LOW": 0.0})
 GEMINI_API_KEY = getattr(config, "GEMINI_API_KEY", "")
+GROQ_API_KEY = getattr(config, "GROQ_API_KEY", "")
 OPENROUTER_API_KEY = getattr(config, "OPENROUTER_API_KEY", "")
 OPENAI_API_KEY = getattr(config, "OPENAI_API_KEY", "")
 SHODAN_API_KEY = getattr(config, "SHODAN_API_KEY", "")
@@ -42,7 +43,7 @@ from modules.honeypot_detector.shodan_helper import ShodanHelper
 from modules.honeypot_detector.osint_helper import OSINTIntelligenceHelper, country_code_to_flag
 from modules.prompt_shield.runner import PromptShieldRunner
 from modules.prompt_shield.adapters import (
-    MockLLMAdapter, GeminiLLMAdapter, OpenAILLMAdapter, CustomEndpointAdapter, OpenRouterLLMAdapter
+    MockLLMAdapter, GeminiLLMAdapter, GroqLLMAdapter, OpenAILLMAdapter, CustomEndpointAdapter, OpenRouterLLMAdapter
 )
 from modules.prompt_shield.hardening import (
     HARDENING_STRATEGIES, DEFAULT_VULNERABLE_PROMPTS, apply_hardening,
@@ -81,6 +82,10 @@ if "hardened_audit_history" not in st.session_state:
     st.session_state.hardened_audit_history = None
 if "gemini_key" not in st.session_state:
     st.session_state.gemini_key = GEMINI_API_KEY
+if "groq_key" not in st.session_state:
+    st.session_state.groq_key = GROQ_API_KEY
+if "groq_model" not in st.session_state:
+    st.session_state.groq_model = "llama-3.3-70b-versatile"
 if "openrouter_key" not in st.session_state:
     st.session_state.openrouter_key = OPENROUTER_API_KEY
 if "openrouter_model" not in st.session_state:
@@ -634,15 +639,20 @@ pdf_exporter = SecurityAuditPDF()
 # Helper to get selected LLM Adapter
 def get_selected_adapter():
     adapter_mode = st.session_state.get("adapter_mode", "Offline Simulator (Mock LLM)")
-    if adapter_mode == "OpenRouter API":
+    if "Groq" in adapter_mode:
+        return GroqLLMAdapter(
+            api_key=st.session_state.get("groq_key", ""),
+            model_name=st.session_state.get("groq_model", "llama-3.3-70b-versatile")
+        )
+    elif adapter_mode == "OpenRouter API":
         return OpenRouterLLMAdapter(
-            api_key=st.session_state.openrouter_key,
+            api_key=st.session_state.get("openrouter_key", ""),
             model_name=st.session_state.get("openrouter_model", "google/gemini-2.5-flash-lite")
         )
     elif "Gemini" in adapter_mode:
-        return GeminiLLMAdapter(api_key=st.session_state.gemini_key)
+        return GeminiLLMAdapter(api_key=st.session_state.get("gemini_key", ""))
     elif adapter_mode == "OpenAI GPT-4o-mini":
-        return OpenAILLMAdapter(api_key=st.session_state.openai_key)
+        return OpenAILLMAdapter(api_key=st.session_state.get("openai_key", ""))
     elif adapter_mode == "Custom Endpoint / Ollama":
         return CustomEndpointAdapter(endpoint_url=st.session_state.get("custom_url", "http://localhost:11434/api/generate"))
     else:
@@ -1023,8 +1033,9 @@ else:
         st.markdown("#### ⚙️ **AI Target Engine**")
         adapter_options = [
             "Offline Simulator (Mock LLM)",
-            "OpenRouter API",
+            "Groq Cloud API (Free & Fast - Recommended)",
             "Google Gemini API (Google AI Studio)",
+            "OpenRouter API",
             "OpenAI GPT-4o-mini",
             "Custom Endpoint / Ollama"
         ]
@@ -1037,28 +1048,58 @@ else:
             "Target Model Adapter:",
             adapter_options,
             index=current_idx,
-            help="Select the AI backend to test. OpenRouter supports all LLMs with your sk-or-v1 key."
+            help="Select the AI backend to test. Use Groq Cloud for instant 100% free tests, Google AI Studio for Gemini, or Offline Simulator for zero-key demos."
         )
         
-        if st.session_state.adapter_mode == "OpenRouter API":
+        if "Groq" in st.session_state.adapter_mode:
+            st.session_state.groq_key = st.text_input(
+                "Groq API Key (100% Free):",
+                value=st.session_state.get("groq_key", ""),
+                type="password",
+                help="Get your free key starting with gsk_... at https://console.groq.com/keys"
+            )
+            groq_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "gemma2-9b-it", "mixtral-8x7b-32768"]
+            cur_g_idx = 0
+            if st.session_state.get("groq_model") in groq_models:
+                cur_g_idx = groq_models.index(st.session_state.groq_model)
+            st.session_state.groq_model = st.selectbox("Groq Model:", groq_models, index=cur_g_idx)
+            st.caption("⚡ **100% Free** with high rate limits from [console.groq.com](https://console.groq.com/keys)")
+            
+        elif "Gemini" in st.session_state.adapter_mode:
+            st.session_state.gemini_key = st.text_input(
+                "Gemini API Key (Google AI Studio):",
+                value=st.session_state.gemini_key,
+                type="password",
+                help="Key must start with AIzaSy... from https://aistudio.google.com/app/apikey"
+            )
+            st.caption("🔑 Keys start with **`AIzaSy...`** from [Google AI Studio](https://aistudio.google.com/app/apikey)")
+            
+        elif st.session_state.adapter_mode == "OpenRouter API":
             st.session_state.openrouter_key = st.text_input(
                 "OpenRouter API Key:",
                 value=st.session_state.get("openrouter_key", ""),
                 type="password",
                 help="Your key starting with sk-or-v1-..."
             )
-            st.session_state.openrouter_model = st.text_input(
-                "OpenRouter Model Slug:",
-                value=st.session_state.get("openrouter_model", "google/gemini-2.5-flash-lite"),
-                help="e.g. google/gemini-2.5-flash-lite, meta-llama/llama-3.3-70b-instruct, openai/gpt-4o-mini"
+            or_presets = [
+                "google/gemini-2.5-flash-lite",
+                "meta-llama/llama-3.3-70b-instruct",
+                "openai/gpt-4o-mini",
+                "anthropic/claude-3-haiku",
+                "Custom Slug"
+            ]
+            cur_or_model = st.session_state.get("openrouter_model", "google/gemini-2.5-flash-lite")
+            or_select = st.selectbox(
+                "Select Model Preset:",
+                or_presets,
+                index=or_presets.index(cur_or_model) if cur_or_model in or_presets else 4
             )
-        elif "Gemini" in st.session_state.adapter_mode:
-            st.session_state.gemini_key = st.text_input(
-                "Gemini API Key (Google AI Studio):",
-                value=st.session_state.gemini_key,
-                type="password",
-                help="Get your free key starting with AIzaSy... from https://aistudio.google.com"
-            )
+            if or_select == "Custom Slug":
+                st.session_state.openrouter_model = st.text_input("OpenRouter Model Slug:", value=cur_or_model)
+            else:
+                st.session_state.openrouter_model = or_select
+            st.caption("ℹ️ Requires purchased credits on OpenRouter account.")
+            
         elif st.session_state.adapter_mode == "OpenAI GPT-4o-mini":
             st.session_state.openai_key = st.text_input(
                 "OpenAI API Key:",
