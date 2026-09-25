@@ -91,59 +91,78 @@ st.markdown(f"""
     {hide_sidebar_css}
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
     
-    html, body, [class*="css"], [class*="st-"], .stApp {{
+    html, body, .stApp {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
         font-size: 16px !important;
-    }}
+    }
     
-    h1, h2, h3, h4, h5, h6, .brand-text {{
+    /* CRITICAL: Preserve Streamlit and Material Symbols icon fonts */
+    [data-testid*="Icon"], 
+    [class*="material-symbols"], 
+    [class*="material-icons"],
+    [data-testid="stExpanderToggleIcon"],
+    [data-testid="stIconMaterial"],
+    summary span[class*="material"],
+    summary [data-testid*="Icon"] {
+        font-family: 'Material Symbols Rounded', 'Material Symbols Outlined', 'Material Icons', sans-serif !important;
+        font-style: normal !important;
+        font-weight: normal !important;
+        letter-spacing: normal !important;
+        text-transform: none !important;
+        line-height: 1 !important;
+        direction: ltr !important;
+        -webkit-font-smoothing: antialiased !important;
+        display: inline-block !important;
+    }
+    
+    h1, h2, h3, h4, h5, h6, .brand-text {
         font-family: 'Space Grotesk', sans-serif !important;
         color: #0f172a !important;
         font-weight: 800 !important;
         letter-spacing: -0.5px !important;
-    }}
+    }
     
-    code, pre, .stCode, [data-testid="stCodeBlock"] * {{
+    code, pre, .stCode, [data-testid="stCodeBlock"] * {
         font-family: 'JetBrains Mono', monospace !important;
         font-size: 0.95rem !important;
-    }}
+    }
     
     /* =========================================================================
        1. COOL-TINTED FROST SLATE BACKGROUND & AMBIENT MESH
        ========================================================================= */
-    .stApp {{
+    .stApp {
         background: radial-gradient(circle at 12% 10%, rgba(59, 130, 246, 0.09) 0%, transparent 45%),
                     radial-gradient(circle at 88% 15%, rgba(139, 92, 246, 0.08) 0%, transparent 45%),
                     radial-gradient(circle at 50% 85%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
                     radial-gradient(circle at 20% 90%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
                     linear-gradient(180deg, #ebf2f7 0%, #e2e8f0 100%) !important;
         color: #0f172a !important;
-    }}
+    }
     
     /* Sidebar styling in tinted cool tone */
-    [data-testid="stSidebar"] {{
+    [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #e2e8f0 0%, #cbd5e1 100%) !important;
         border-right: 1.5px solid #94a3b8 !important;
-    }}
+    }
     
-    [data-testid="stSidebar"] * {{
+    [data-testid="stSidebar"] * {
         color: #0f172a !important;
-    }}
+    }
     
     /* Global Typography & Content Hierarchy */
-    p, span, div, li, td, th {{
+    p, li, td, th {
         color: #1e293b;
         font-size: 1.04rem;
         line-height: 1.65;
-    }}
+    }
 
-    .stSubheader, [data-testid="stHeadingWithActionElements"] h2, [data-testid="stHeadingWithActionElements"] h3 {{
+    .stSubheader, [data-testid="stHeadingWithActionElements"] h2, [data-testid="stHeadingWithActionElements"] h3 {
         font-size: 1.85rem !important;
         font-weight: 800 !important;
         color: #0f172a !important;
         margin-top: 8px !important;
         margin-bottom: 6px !important;
-    }}
+    }
     
     [data-testid="stCaptionContainer"], .stCaption, small {{
         font-size: 1.02rem !important;
@@ -329,17 +348,37 @@ st.markdown(f"""
         color: #0f172a !important;
     }}
 
-    /* Expander styling */
-    [data-testid="stExpander"] {{
-        background: #f1f5f9 !important;
+    /* Expander styling with clean icon alignment and hover */
+    [data-testid="stExpander"] {
+        background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%) !important;
         border: 1.5px solid #cbd5e1 !important;
         border-radius: 14px !important;
         margin-bottom: 12px !important;
-    }}
-    [data-testid="stExpander"] summary {{
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03) !important;
+        overflow: hidden !important;
+        transition: all 0.2s ease !important;
+    }
+    [data-testid="stExpander"]:hover {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.12) !important;
+    }
+    [data-testid="stExpander"] summary {
+        padding: 12px 18px !important;
         color: #0f172a !important;
         font-weight: 700 !important;
-    }}
+        cursor: pointer !important;
+    }
+    [data-testid="stExpander"] summary p {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        font-size: 1.04rem !important;
+        margin: 0 !important;
+    }
+    [data-testid="stExpanderDetails"] {
+        padding: 16px 20px !important;
+        background: #f8fafc !important;
+        border-top: 1px solid #cbd5e1 !important;
+    }
 
     /* =========================================================================
        4. CARDS & HERO CONTAINERS (FROSTED SLATE WITH NO STARK WHITE)
@@ -1382,7 +1421,16 @@ else:
             # Detailed Scorecard Table
             st.markdown("#### 📋 **Adversarial Test Execution Log**")
             for test in llm_res["results"]:
-                with st.expander(f"{test['test_id']}: {test['test_name']} [{test['category']}] - {test['verdict']}"):
+                verdict_str = test.get("verdict", "UNKNOWN")
+                if verdict_str == "VULNERABLE":
+                    badge_prefix = "🚨 VULNERABLE"
+                elif verdict_str == "DEFENDED":
+                    badge_prefix = "🛡️ DEFENDED"
+                else:
+                    badge_prefix = "⚠️ SUSPICIOUS"
+                
+                exp_title = f"{badge_prefix}  |  {test['test_id']}: {test['test_name']} [{test['category']}]"
+                with st.expander(exp_title):
                     col_e1, col_e2 = st.columns([1, 1])
                     with col_e1:
                         st.markdown("**Payload Injected:**")
@@ -1391,6 +1439,7 @@ else:
                         st.markdown("**Model Output:**")
                         st.code(test["raw_response"], language="text")
                         st.caption(f"Reason: {test['reason']} | Latency: {test['latency_ms']}ms")
+
 
     # -------------------------------------------------------------
     # WORKSPACE TAB 3: 1-CLICK PROMPT AUTO-HARDENER & DEFENSE STUDIO
