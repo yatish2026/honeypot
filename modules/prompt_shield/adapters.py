@@ -6,7 +6,11 @@ import time
 from typing import Dict, Any, Optional
 import requests
 
-from config import GEMINI_API_KEY, OPENAI_API_KEY, OPENROUTER_API_KEY
+import config
+
+GEMINI_API_KEY = getattr(config, "GEMINI_API_KEY", "")
+OPENAI_API_KEY = getattr(config, "OPENAI_API_KEY", "")
+OPENROUTER_API_KEY = getattr(config, "OPENROUTER_API_KEY", "")
 
 
 class BaseLLMAdapter:

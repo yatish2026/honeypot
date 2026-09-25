@@ -16,9 +16,9 @@ CURRENT_DIR = Path(__file__).resolve().parent
 if str(CURRENT_DIR) not in sys.path:
     sys.path.insert(0, str(CURRENT_DIR))
 
-# Cleanly evict cached submodules so Streamlit daemon always loads fresh files
+# Cleanly evict cached submodules and config so Streamlit daemon always loads fresh files
 for mod_name in list(sys.modules.keys()):
-    if mod_name.startswith("modules."):
+    if mod_name.startswith("modules.") or mod_name == "config":
         sys.modules.pop(mod_name, None)
 
 import streamlit as st
@@ -26,10 +26,16 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-from config import (
-    COMMON_PORTS, HONEYPOT_RISK_THRESHOLDS,
-    GEMINI_API_KEY, OPENROUTER_API_KEY, OPENAI_API_KEY, SHODAN_API_KEY, REPORTS_DIR
-)
+import config
+importlib.reload(config)
+
+COMMON_PORTS = getattr(config, "COMMON_PORTS", [21, 22, 23, 25, 53, 80, 110, 143, 443, 502, 1433, 2222, 3306, 5000, 8080, 8443, 8888])
+HONEYPOT_RISK_THRESHOLDS = getattr(config, "HONEYPOT_RISK_THRESHOLDS", {"CRITICAL": 0.80, "HIGH": 0.60, "MEDIUM": 0.35, "LOW": 0.0})
+GEMINI_API_KEY = getattr(config, "GEMINI_API_KEY", "")
+OPENROUTER_API_KEY = getattr(config, "OPENROUTER_API_KEY", "")
+OPENAI_API_KEY = getattr(config, "OPENAI_API_KEY", "")
+SHODAN_API_KEY = getattr(config, "SHODAN_API_KEY", "")
+REPORTS_DIR = getattr(config, "REPORTS_DIR", CURRENT_DIR / "reports")
 from modules.honeypot_detector.scanner import NetworkScanner, SIMULATION_PROFILES
 from modules.honeypot_detector.classifier import HoneypotClassifier
 from modules.honeypot_detector.shodan_helper import ShodanHelper
